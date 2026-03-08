@@ -1,0 +1,42 @@
+@import "./variables";
+@import "./themes";
+@import "./reset";
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.section {
+  margin: 3rem 0;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+  gap: 1.5rem;
+}
+
+.movie-card {
+  background: var(--card);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.25s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
