@@ -1,40 +1,95 @@
-@import "./variables";
-@import "./themes";
-@import "./reset";
+@use './variables' as *;
+@use './themes';
+@use './reset';
 
+// Layout
 .container {
   width: 90%;
-  max-width: 1200px;
-  margin: auto;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .section {
   margin: 3rem 0;
 }
 
+// Movie grid
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
-  gap: 1.5rem;
-}
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.25rem;
 
-.movie-card {
-  background: var(--card);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.25s ease;
-
-  &:hover {
-    transform: scale(1.05);
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
 
-.btn-primary {
-  background: var(--accent);
-  color: white;
-  padding: 0.6rem 1.2rem;
+// Shared buttons — shadcn-inspired minimal style
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   border-radius: 8px;
   font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background $transition, color $transition,
+    border-color $transition, box-shadow $transition;
+  white-space: nowrap;
+
+  // Sizes
+  &--sm  { padding: 0.35rem 0.8rem;  font-size: 0.8rem; }
+  &--md  { padding: 0.5rem  1.1rem;  font-size: 0.875rem; }
+  &--lg  { padding: 0.65rem 1.5rem;  font-size: 0.95rem; }
+
+  // Variants
+  &--primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+
+    &:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+    }
+
+    &:active { transform: scale(0.98); }
+  }
+
+  &--outline {
+    background: transparent;
+    color: var(--text);
+    border-color: var(--border);
+
+    &:hover {
+      background: var(--card);
+      border-color: var(--text-secondary);
+    }
+
+    &:active { transform: scale(0.98); }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: transparent;
+
+    &:hover {
+      background: var(--card);
+      color: var(--text);
+    }
+  }
+}
+
+// Legacy alias kept for backward compat
+.btn-primary {
+  @extend .btn;
+  @extend .btn--primary;
+  @extend .btn--md;
 }
 
 .text-secondary {

@@ -1,19 +1,56 @@
-import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+import Landing from "./pages/Landing/Landing";
+import About from "./pages/About/About";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
 import Home from "./pages/Home/Home";
-import MovieDetails from "./pages/MovieDetails/MovieDetails";
-import Search from "./pages/Search/Search";
 import Favorites from "./pages/Favorites/Favorites";
 import History from "./pages/History/History";
+import MovieDetails from "./pages/MovieDetails/MovieDetails";
+import ProtectedRoute from "./utils/Protected";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Home /> },
-  { path: "/movie/:id", element: <MovieDetails /> },
-  { path: "/search", element: <Search /> },
-  { path: "/favorites", element: <Favorites /> },
-  { path: "/history", element: <History /> },
+  { path: "/", element: <Landing /> },
+  { path: "/about", element: <About /> },
+
+  { path: "/login", element: <Login /> },
+  { path: "/register", element: <Register /> },
+
+  {
+    path: "/home",
+    element: (
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/favorites",
+    element: (
+      <ProtectedRoute>
+        <Favorites />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/history",
+    element: (
+      <ProtectedRoute>
+        <History />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/movie/:id",
+    element: (
+      <ProtectedRoute>
+        <MovieDetails />
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
-const AppRouter = () => <RouterProvider router={router} />;
-
-export default AppRouter;
+export default router;

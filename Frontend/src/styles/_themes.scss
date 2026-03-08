@@ -1,7 +1,29 @@
-// _themes.scss — theme-specific overrides (complements _theme.scss)
-
+// Dark theme (default)
 [data-theme='dark'] {
+  --bg:             #141414;
+  --bg-secondary:   #1a1a1a;
+  --card:           #1f1f1f;
+  --card-hover:     #2a2a2a;
+  --text:           #ffffff;
+  --text-secondary: #b3b3b3;
+  --accent:         #e50914;
+  --accent-hover:   #f40612;
+  --navbar-bg:      rgba(20, 20, 20, 0.96);
+  --border:         rgba(255, 255, 255, 0.08);
+  --overlay:        rgba(0, 0, 0, 0.6);
 }
 
+// Light theme
 [data-theme='light'] {
+  --bg:             #f9f9f9;
+  --bg-secondary:   #ffffff;
+  --card:           #ffffff;
+  --card-hover:     #f0f0f0;
+  --text:           #111111;
+  --text-secondary: #555555;
+  --accent:         #e50914;
+  --accent-hover:   #c4070f;
+  --navbar-bg:      rgba(255, 255, 255, 0.96);
+  --border:         rgba(0, 0, 0, 0.08);
+  --overlay:        rgba(0, 0, 0, 0.08);
 }

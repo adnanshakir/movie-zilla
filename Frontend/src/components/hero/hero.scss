@@ -1,0 +1,234 @@
+@use "../../styles/variables" as *;
+
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  overflow: hidden;
+
+  // Subtle radial glow behind content
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 70% 60% at 20% 50%,
+      rgba(229, 9, 20, 0.08) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  &__overlay {
+    display: none;
+  }
+
+  // Two-column inner
+  &__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+
+  // ── Left column ────────────────────────────────────────
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__eyebrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(229, 9, 20, 0.1);
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    width: fit-content;
+  }
+
+  .hero__title {
+    font-size: clamp(2.4rem, 4vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    color: var(--text);
+
+    span {
+      color: var(--accent);
+    }
+  }
+
+  .hero__desc {
+    max-width: 520px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  &__features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+  }
+
+  &__feature-icon {
+    font-size: 1rem;
+    width: 1.6rem;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  // ── Right column — poster stack ─────────────────────────
+  &__visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      order: -1;
+    }
+  }
+
+  .hero__poster-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__poster-stack {
+    position: relative;
+    width: 240px;
+    height: 360px;
+  }
+
+  &__poster {
+    position: absolute;
+    border-radius: $radius;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: all 0.35s ease;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    transition:
+      transform 0.4s ease,
+      opacity 0.3s ease;
+
+    &--back {
+      width: 180px;
+      height: 270px;
+      top: 40px;
+      left: 60px;
+      background: var(--bg-secondary);
+      transform: rotate(6deg);
+      opacity: 0.7;
+    }
+
+    &--mid {
+      width: 185px;
+      height: 278px;
+      top: 20px;
+      left: 30px;
+      background: var(--card);
+      transform: rotate(-3deg);
+      opacity: 0.85;
+    }
+
+    &--front {
+      width: 190px;
+      height: 285px;
+      top: 0;
+      left: 0;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: flex-end;
+    }
+  }
+
+  .hero__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    background: rgba(0, 0, 0, 0.65);
+    padding: 3px 7px;
+    border-radius: 6px;
+
+    font-size: 0.75rem;
+    color: white;
+  }
+  .hero__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    padding: 0.7rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.5) 45%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+
+  .hero__poster-stack:hover {
+    .hero__poster--back {
+      transform: rotate(12deg) translateX(60px) translateY(10px);
+      opacity: 1;
+    }
+
+    .hero__poster--mid {
+      transform: rotate(-8deg) translateX(30px) translateY(5px);
+      opacity: 1;
+    }
+
+    .hero__poster--front {
+      transform: scale(1.05);
+    }
+  }
+}

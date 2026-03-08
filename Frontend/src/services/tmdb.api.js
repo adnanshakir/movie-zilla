@@ -6,7 +6,7 @@ const tmdb = {
   getPopular: (page = 1) =>
     `${TMDB_BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`,
 
-  getTrending: () =>
+  getTrending: (page = 1) =>
     `${TMDB_BASE_URL}/trending/movie/week?api_key=${API_KEY}`,
 
   getMovieDetails: (id) =>
