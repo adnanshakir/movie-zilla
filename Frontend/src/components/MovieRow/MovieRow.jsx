@@ -5,13 +5,23 @@ import MovieCard from "../MovieCard/MovieCard";
 
 const SKELETON_COUNT = 8;
 
-const MovieRow = ({ title, url, seeMoreLink }) => {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+// MovieRow works in two modes:
+//  • Controlled  — pass `movies` + `loading` props (Home fetches in parallel)
+//  • Self-fetching — pass a `url` prop (category pages, etc.)
+const MovieRow = ({ title, url, seeMoreLink, movies: propMovies, loading: propLoading }) => {
+  const isControlled = propMovies !== undefined;
+
+  const [localMovies, setLocalMovies] = useState([]);
+  const [localLoading, setLocalLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const movies  = isControlled ? propMovies  : localMovies;
+  const loading = isControlled ? propLoading : localLoading;
+
   useEffect(() => {
-    setLoading(true);
+    if (isControlled) return; // data comes from parent, skip self-fetch
+
+    setLocalLoading(true);
     setError(false);
 
     const fetchMovies = async () => {
@@ -19,16 +29,16 @@ const MovieRow = ({ title, url, seeMoreLink }) => {
         const res = await fetch(url);
         if (!res.ok) throw new Error();
         const data = await res.json();
-        setMovies(data.results.slice(0, 18));
+        setLocalMovies(data.results.slice(0, 18));
       } catch {
         setError(true);
       } finally {
-        setLoading(false);
+        setLocalLoading(false);
       }
     };
 
     fetchMovies();
-  }, [url]);
+  }, [url, isControlled]);
 
   return (
     <section className="movie-row">

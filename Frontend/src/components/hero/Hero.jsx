@@ -64,7 +64,7 @@ const Hero = () => {
           <div className="hero__actions">
             <button
               className="btn btn--primary btn--lg"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
             >
               Explore Movies
             </button>

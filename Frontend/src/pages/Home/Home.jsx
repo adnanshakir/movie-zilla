@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import tmdb from "../../services/tmdb.api.js";
 import MovieRow from "../../components/MovieRow/MovieRow.jsx";
@@ -6,8 +6,47 @@ import Navbar from "../../components/Navbar/Navbar.jsx";
 import Footer from "../../components/Footer/Footer.jsx";
 import "./home.scss";
 
+const SLICE = 18;
+
 const Home = () => {
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState({
+    trending: [],
+    popular: [],
+    topRated: [],
+    nowPlaying: [],
+    upcoming: [],
+  });
+
+  // Fetch all five categories in parallel — a single Promise.all so the
+  // network requests race concurrently and all rows update together.
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const [t, p, tr, np, u] = await Promise.all([
+          fetch(tmdb.getTrending()).then((r) => r.json()),
+          fetch(tmdb.getPopular()).then((r) => r.json()),
+          fetch(tmdb.getTopRated()).then((r) => r.json()),
+          fetch(tmdb.getNowPlaying()).then((r) => r.json()),
+          fetch(tmdb.getUpcoming()).then((r) => r.json()),
+        ]);
+        setRows({
+          trending:   (t.results  ?? []).slice(0, SLICE),
+          popular:    (p.results  ?? []).slice(0, SLICE),
+          topRated:   (tr.results ?? []).slice(0, SLICE),
+          nowPlaying: (np.results ?? []).slice(0, SLICE),
+          upcoming:   (u.results  ?? []).slice(0, SLICE),
+        });
+      } catch {
+        // rows stay empty; MovieRow error state handles display
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
 
   // Press "S" (not inside an input) to jump straight to search
   useEffect(() => {
@@ -49,11 +88,11 @@ const Home = () => {
           <kbd className="home-search__kbd">S</kbd>
         </button>
 
-        <MovieRow title="Trending" url={tmdb.getTrending()} seeMoreLink="/movies/trending" />
-        <MovieRow title="Popular Movies" url={tmdb.getPopular()} seeMoreLink="/movies/popular" />
-        <MovieRow title="Top Rated" url={tmdb.getTopRated()} seeMoreLink="/movies/top-rated" />
-        <MovieRow title="Now Playing" url={tmdb.getNowPlaying()} seeMoreLink="/movies/now-playing" />
-        <MovieRow title="Upcoming" url={tmdb.getUpcoming()} seeMoreLink="/movies/upcoming" />
+        <MovieRow title="Trending"      movies={rows.trending}   loading={loading} seeMoreLink="/movies/trending" />
+        <MovieRow title="Popular Movies" movies={rows.popular}    loading={loading} seeMoreLink="/movies/popular" />
+        <MovieRow title="Top Rated"      movies={rows.topRated}   loading={loading} seeMoreLink="/movies/top-rated" />
+        <MovieRow title="Now Playing"    movies={rows.nowPlaying} loading={loading} seeMoreLink="/movies/now-playing" />
+        <MovieRow title="Upcoming"       movies={rows.upcoming}   loading={loading} seeMoreLink="/movies/upcoming" />
       </div>
 
       <Footer />

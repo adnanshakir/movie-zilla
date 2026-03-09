@@ -26,7 +26,7 @@ const tmdb = {
   getUpcoming: (page = 1) =>
     `${TMDB_BASE_URL}/movie/upcoming?api_key=${API_KEY}&page=${page}`,
 
-  getImageUrl: (path) => (path ? `${TMDB_IMAGE_BASE}${path}` : null),
+  getImageUrl: (path) => (path ? `https://image.tmdb.org/t/p/w342${path}` : null),
 };
 
 export default tmdb;
