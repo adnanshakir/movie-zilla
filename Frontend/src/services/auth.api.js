@@ -11,7 +11,13 @@ async function request(path, options = {}) {
     ...options,
   });
 
-  const data = await response.json();
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    data = {};
+  }
 
   if (!response.ok) {
     throw new Error(data.message || "Request failed");
@@ -25,6 +31,7 @@ function registerUser(data) {
     method: "POST",
     body: JSON.stringify(data),
   });
+  
 }
 
 function loginUser(data) {
