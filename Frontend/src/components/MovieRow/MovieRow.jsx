@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./movieRow.scss";
+import "./movierow.scss";
 import MovieCard from "../MovieCard/MovieCard";
 
 const SKELETON_COUNT = 8;
