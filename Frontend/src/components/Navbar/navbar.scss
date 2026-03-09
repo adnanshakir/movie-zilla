@@ -14,12 +14,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 90%;
+    width: 100%;
     max-width: 1280px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
     height: 68px;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   &__logo {
@@ -30,8 +30,10 @@
     text-transform: uppercase;
     font-family: "Montserrat", sans-serif;
     flex-shrink: 0;
+    text-decoration: none;
   }
 
+  // Desktop centre links
   &__links {
     display: flex;
     align-items: center;
@@ -47,6 +49,7 @@
     position: relative;
     transition: color $transition;
     white-space: nowrap;
+    text-decoration: none;
 
     &::after {
       content: "";
@@ -62,9 +65,7 @@
     &:hover,
     &.active {
       color: var(--text);
-      &::after {
-        width: 100%;
-      }
+      &::after { width: 100%; }
     }
   }
 
@@ -75,6 +76,7 @@
     flex-shrink: 0;
   }
 
+  // Hamburger / Close — hidden on desktop, shown on mobile
   &__menu-btn {
     display: none;
     align-items: center;
@@ -86,6 +88,7 @@
     color: var(--text-secondary);
     border-radius: 8px;
     cursor: pointer;
+    flex-shrink: 0;
     transition:
       background $transition,
       color $transition,
@@ -98,7 +101,7 @@
     }
   }
 
-  // Icon-only theme toggle button
+  // Theme toggle
   &__toggle {
     display: flex;
     align-items: center;
@@ -110,6 +113,7 @@
     color: var(--text-secondary);
     border-radius: 8px;
     cursor: pointer;
+    flex-shrink: 0;
     transition:
       background $transition,
       color $transition,
@@ -121,77 +125,92 @@
       border-color: var(--text-secondary);
     }
 
-    svg {
-      display: block;
-    }
+    svg { display: block; }
   }
 
+  // Mobile dropdown — animated via max-height; invisible on desktop
   &__mobile-menu {
-    display: none;
-    max-height: 0;
     overflow: hidden;
+    max-height: 0;
     opacity: 0;
-    transform: translateY(-6px);
     transition:
       max-height 0.28s ease,
-      opacity 0.2s ease,
-      transform 0.2s ease;
-  }
+      opacity 0.22s ease;
 
-  &__mobile-link {
-    color: var(--text-secondary);
-    padding: 0.65rem 0.25rem;
-    font-size: 0.95rem;
-    border-bottom: 1px solid var(--border);
-
-    &.active,
-    &:hover {
-      color: var(--text);
+    &.open {
+      max-height: 320px;
+      opacity: 1;
     }
   }
 
-  // Mobile
+  // Mobile link + logout hidden on desktop (display set in media query)
+  &__mobile-link,
+  &__mobile-logout {
+    display: none;
+  }
+
+  // ── Mobile ────────────────────────────────────────────────
   @media (max-width: 640px) {
     &__inner {
       padding: 0 1rem;
-      gap: 0.65rem;
+      gap: 0.5rem;
       height: 60px;
     }
 
-    // Keep desktop nav hidden on mobile, use dropdown menu instead
-    &__links {
-      display: none;
-    }
+    &__logo { font-size: 1.15rem; }
 
-    &__logo {
-      font-size: 1.1rem;
-    }
+    // Hide desktop links — replaced by dropdown
+    &__links { display: none; }
 
-    &__actions {
-      gap: 0.45rem;
-    }
+    // Hide logout from action bar — it's inside the dropdown
+    &__logout-desktop { display: none; }
+
+    &__actions { gap: 0.45rem; }
 
     &__actions .btn {
       padding: 0.35rem 0.7rem;
       font-size: 0.78rem;
     }
 
-    &__menu-btn {
-      display: inline-flex;
-    }
+    // Show hamburger toggle
+    &__menu-btn { display: inline-flex; }
 
+    // Dropdown container
     &__mobile-menu {
-      display: flex;
-      flex-direction: column;
       background: var(--navbar-bg);
       border-top: 1px solid var(--border);
-      padding: 0 1rem;
+      padding: 0 1.25rem;
+    }
 
-      &.open {
-        max-height: 220px;
-        opacity: 1;
-        transform: translateY(0);
-      }
+    // Shared row styles for links + logout
+    &__mobile-link,
+    &__mobile-logout {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 0.85rem 0;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border: none;
+      border-bottom: 1px solid var(--border);
+      background: none;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color $transition;
+
+      &.active,
+      &:hover { color: var(--text); }
+    }
+
+    // Logout is the last item: accent colour, no bottom border
+    &__mobile-logout {
+      border-bottom: none;
+      padding-bottom: 1.1rem;
+      color: var(--accent);
+      font-family: inherit;
+
+      &:hover { opacity: 0.82; }
     }
   }
 }

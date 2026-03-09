@@ -2,20 +2,11 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import "./navbar.scss";
 import useAuth from "../../hooks/useAuth";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SunIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="5" />
     <line x1="12" y1="1" x2="12" y2="3" />
     <line x1="12" y1="21" x2="12" y2="23" />
@@ -29,17 +20,8 @@ const SunIcon = () => (
 );
 
 const MoonIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
   </svg>
 );
@@ -51,10 +33,24 @@ const Navbar = () => {
   const isLanding = location.pathname === "/";
   const { logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navRef = useRef(null);
 
+  // Close on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  // Close when clicking outside the navbar
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handler = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [isMenuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -62,116 +58,84 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" ref={navRef}>
       <div className="navbar__inner">
-        <Link to="/" className="navbar__logo">
-          MovieZilla
-        </Link>
+        <Link to="/" className="navbar__logo">MovieZilla</Link>
 
+        {/* Desktop centre links */}
         {isLoggedIn && (
           <div className="navbar__links">
-            <NavLink
-              to="/home"
-              className={({ isActive }) =>
-                `navbar__link${isActive ? " active" : ""}`
-              }
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/favorites"
-              className={({ isActive }) =>
-                `navbar__link${isActive ? " active" : ""}`
-              }
-            >
-              Favorites
-            </NavLink>
-            <NavLink
-              to="/history"
-              className={({ isActive }) =>
-                `navbar__link${isActive ? " active" : ""}`
-              }
-            >
-              History
-            </NavLink>
+            <NavLink to="/home"
+              className={({ isActive }) => `navbar__link${isActive ? " active" : ""}`}>Home</NavLink>
+            <NavLink to="/favorites"
+              className={({ isActive }) => `navbar__link${isActive ? " active" : ""}`}>Favorites</NavLink>
+            <NavLink to="/history"
+              className={({ isActive }) => `navbar__link${isActive ? " active" : ""}`}>History</NavLink>
           </div>
         )}
 
         <div className="navbar__actions">
+          {/* Landing page CTAs */}
           {isLanding && !isLoggedIn && (
             <>
-              <Link to="/login" className="btn btn--outline btn--sm">
-                Login
-              </Link>
-              <Link to="/register" className="btn btn--primary btn--sm">
-                Sign Up
-              </Link>
+              <Link to="/login" className="btn btn--outline btn--sm">Login</Link>
+              <Link to="/register" className="btn btn--primary btn--sm">Sign Up</Link>
             </>
           )}
+
+          {/* Logout — desktop only; mobile version lives in the dropdown */}
           {isLoggedIn && (
-            <button className="btn btn--outline btn--sm" onClick={handleLogout}>
+            <button className="btn btn--outline btn--sm navbar__logout-desktop" onClick={handleLogout}>
               Logout
             </button>
           )}
 
-          <button
-            className="navbar__toggle"
-            onClick={toggleTheme}
-            aria-label={
-              theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-            }
-          >
+          {/* Theme toggle */}
+          <button className="navbar__toggle" onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
 
+          {/* Hamburger / Close — mobile only */}
           {isLoggedIn && (
             <button
               className="navbar__menu-btn"
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              aria-label="Toggle navigation menu"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
             >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
+              {isMenuOpen ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              )}
             </button>
           )}
         </div>
       </div>
 
+      {/* Mobile dropdown */}
       {isLoggedIn && (
         <div className={`navbar__mobile-menu${isMenuOpen ? " open" : ""}`}>
-          <NavLink
-            to="/home"
+          <NavLink to="/home"
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/favorites"
+            onClick={() => setIsMenuOpen(false)}>Home</NavLink>
+          <NavLink to="/favorites"
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Favorites
-          </NavLink>
-          <NavLink
-            to="/history"
+            onClick={() => setIsMenuOpen(false)}>Favorites</NavLink>
+          <NavLink to="/history"
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            History
-          </NavLink>
+            onClick={() => setIsMenuOpen(false)}>History</NavLink>
+          <button className="navbar__mobile-logout" onClick={handleLogout}>Logout</button>
         </div>
       )}
     </nav>
