@@ -9,6 +9,7 @@ import History from "./pages/History/History";
 import MovieDetails from "./pages/MovieDetails/MovieDetails";
 import Search from "./pages/Search/Search";
 import MovieCategory from "./pages/MovieCategory/MovieCategory";
+import Category from "./pages/Category/Category";
 import ProtectedRoute from "./utils/Protected";
 
 const router = createBrowserRouter([
@@ -68,6 +69,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <MovieCategory />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/category",
+    element: (
+      <ProtectedRoute>
+        <Category />
       </ProtectedRoute>
     ),
   },

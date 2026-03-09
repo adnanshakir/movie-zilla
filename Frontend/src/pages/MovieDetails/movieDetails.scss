@@ -3,13 +3,7 @@
 .movie-details {
   min-height: 100vh;
   background: var(--bg);
-  padding: 6rem 2rem 5rem;
-
-  // ── Back button bar ──────────────────────────────────────
-  &__top-bar {
-    max-width: 1100px;
-    margin: 0 auto 1.75rem;
-  }
+  overflow-x: hidden;
 
   // ── Loading / error states ──────────────────────────────
   &--loading,
@@ -38,27 +32,84 @@
     }
   }
 
-  // ── Two-column header ───────────────────────────────────
-  &__header {
-    max-width: 1100px;
+  // ── Hero section ─────────────────────────────────────────
+  &__hero {
+    position: relative;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 768px) { min-height: 60vh; }
+  }
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform-origin: center;
+
+    @media (max-width: 768px) {
+      transform: none;
+    }
+  }
+
+  &__hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to bottom, transparent 45%, var(--bg) 100%),
+      linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.2) 100%);
+
+    @media (max-width: 768px) {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.7) 50%,
+        rgba(0, 0, 0, 0.95) 100%
+      );
+    }
+  }
+
+  &__hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+    padding: 5.5rem 2rem 3.5rem;
+
+    @media (max-width: 640px) {
+      padding: 4.5rem 1.25rem 2.5rem;
+    }
+  }
+
+  &__top-bar {
+    margin-bottom: 2rem;
+  }
+
+  // ── Two-column header ─────────────────────────────────────
+  &__header {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 3rem;
+    grid-template-columns: 260px 1fr;
+    gap: 2.5rem;
     align-items: start;
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
-      gap: 1.75rem;
+      gap: 1.5rem;
     }
   }
 
-  // ── Poster ──────────────────────────────────────────────
+  // ── Poster ────────────────────────────────────────────────
   &__poster {
     border-radius: $radius;
     overflow: hidden;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75);
     flex-shrink: 0;
+
+    @media (max-width: 768px) { display: none; }
 
     img {
       width: 100%;
@@ -67,7 +118,7 @@
 
     &-placeholder {
       width: 100%;
-      height: 450px;
+      height: 390px;
       background: var(--card);
       display: flex;
       align-items: center;
@@ -77,30 +128,35 @@
     }
   }
 
-  // ── Info column ─────────────────────────────────────────
+  // ── Info column ───────────────────────────────────────────
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
+    color: #fff;
   }
 
   &__title {
-    font-size: clamp(1.6rem, 3vw, 2.6rem);
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.2;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
   }
 
   // ── Meta pill row ────────────────────────────────────────
   &__meta {
     display: inline-flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.8rem;
     flex-wrap: wrap;
-    padding: 0.6rem 1.1rem;
-    background: var(--card);
-    border: 1px solid var(--border);
+    padding: 0.55rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: $radius;
+    width: fit-content;
   }
 
   &__rating {
@@ -111,14 +167,14 @@
 
   &__date,
   &__runtime {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.85);
     font-size: 0.85rem;
     font-weight: 500;
 
     &::before {
       content: "·";
-      margin-right: 1rem;
-      opacity: 0.4;
+      margin-right: 0.8rem;
+      opacity: 0.5;
     }
   }
 
@@ -133,15 +189,14 @@
     display: inline-block;
     padding: 0.3rem 0.85rem;
     border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 0.78rem;
     font-weight: 500;
-    transition:
-      background $transition,
-      border-color $transition,
-      color $transition;
+    transition: background $transition, border-color $transition;
 
     &:hover {
       background: var(--accent);
@@ -150,43 +205,77 @@
     }
   }
 
-  // ── Overview panel (progressive blur card) ───────────────
-  &__overview {
-    padding: 1.25rem 1.5rem;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: $radius;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-
-    h3 {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      margin-bottom: 0.75rem;
-    }
-
-    p {
-      font-size: 0.95rem;
-      line-height: 1.8;
-      color: var(--text);
-    }
-  }
-
-  // ── Action buttons ──────────────────────────────────────
+  // ── Action buttons ────────────────────────────────────────
   &__actions {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
 
-  // ── Trailer modal ───────────────────────────────────────
+  // ── Below-hero sections ───────────────────────────────────
+  &__section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+
+    @media (max-width: 640px) { padding: 0 1.25rem; }
+  }
+
+  &__section-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+
+    &::after {
+      content: "";
+      display: block;
+      height: 3px;
+      width: 36px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-top: 0.4rem;
+    }
+  }
+
+  &__trailer-section {
+    padding: 3rem 0;
+    background: var(--bg);
+  }
+
+  &__trailer-embed {
+    width: 100%;
+    border-radius: $radius;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+
+    iframe {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: none;
+    }
+  }
+
+  &__overview-section {
+    padding: 0 0 3rem;
+    background: var(--bg);
+  }
+
+  &__overview-text {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    max-width: 760px;
+  }
+
+  // ── Trailer modal ─────────────────────────────────────────
   &__modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.88);
+    background: rgba(0, 0, 0, 0.9);
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -198,12 +287,8 @@
   }
 
   @keyframes md-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
 
   &__modal {

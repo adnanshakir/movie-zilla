@@ -2,7 +2,10 @@
 
 .cast {
   max-width: 1100px;
-  margin: 3rem auto 0;
+  margin: 2rem auto 4rem;
+  padding: 0 2rem;
+
+  @media (max-width: 640px) { padding: 0 1.25rem; }
 
   &__heading {
     font-size: 1.2rem;
@@ -10,107 +13,110 @@
     color: var(--text);
     margin-bottom: 1.25rem;
     letter-spacing: 0.02em;
-  }
 
-  // ── Horizontal scroll list ───────────────────────────────
-  &__list {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    scrollbar-width: none;
-    padding-bottom: 0.5rem;
-
-    &::-webkit-scrollbar {
-      display: none;
+    &::after {
+      content: "";
+      display: block;
+      height: 3px;
+      width: 36px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-top: 0.4rem;
     }
   }
+}
 
-  // ── Individual cast card ─────────────────────────────────
-  &__card {
-    flex-shrink: 0;
-    width: 140px;
-    text-align: center;
-    border-radius: $radius;
-    overflow: hidden;
-    background: var(--card);
-    border: 1px solid var(--border);
-    transition: transform $transition, box-shadow $transition;
+// ── Responsive grid ───────────────────────────────────────────────
+.cast-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 1100px) { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 900px)  { grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+  @media (max-width: 640px)  { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  @media (max-width: 400px)  { grid-template-columns: repeat(2, 1fr); }
+}
+
+// ── Individual cast card ──────────────────────────────────────────
+.cast-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: $radius;
+  overflow: hidden;
+  text-align: center;
+  transition: transform $transition, box-shadow $transition;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   }
+}
 
-  // ── Photo ────────────────────────────────────────────────
-  &__photo {
-    width: 100%;
-    height: 150px;
-    overflow: hidden;
-    background: var(--bg-secondary);
+// ── Portrait image ────────────────────────────────────────────────
+.cast-img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  background: var(--bg);
+}
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      transition: transform $transition;
-    }
-  }
+// ── Actor name ────────────────────────────────────────────────────
+.cast-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 0.5rem 0.5rem 0.1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
 
-  // ── Text info ────────────────────────────────────────────
-  &__info {
-    padding: 0.55rem 0.6rem 0.65rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-  }
+// ── Character name ────────────────────────────────────────────────
+.cast-character {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 0 0.5rem 0.6rem;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
 
-  &__name {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.3;
-    // clamp to 2 lines
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+// ── Loading skeleton ──────────────────────────────────────────────
+@keyframes cast-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
 
-  &__character {
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    line-height: 1.3;
-    // clamp to 2 lines
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+.cast--loading {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 2rem auto 4rem;
+  padding: 0 2rem;
 
-  // ── Loading skeleton ─────────────────────────────────────
-  &--loading {
-    display: flex;
-    gap: 1rem;
-    overflow: hidden;
-    // no heading shown during load
-  }
+  @media (max-width: 1100px) { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 900px)  { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 640px)  { grid-template-columns: repeat(3, 1fr); padding: 0 1.25rem; }
+  @media (max-width: 400px)  { grid-template-columns: repeat(2, 1fr); }
+}
 
-  &__skeleton {
-    flex-shrink: 0;
-    width: 110px;
-    height: 198px;
-    border-radius: $radius;
-    background: linear-gradient(
-      90deg,
-      var(--card) 25%,
-      var(--card-hover) 50%,
-      var(--card) 75%
-    );
-    background-size: 200% 100%;
-    animation: cast-shimmer 1.4s ease infinite;
-  }
-
-  @keyframes cast-shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
+.cast__skeleton {
+  aspect-ratio: 2 / 3;
+  border-radius: $radius;
+  background: linear-gradient(
+    90deg,
+    var(--card) 25%,
+    var(--card-hover, #2a2a2a) 50%,
+    var(--card) 75%
+  );
+  background-size: 800px 100%;
+  animation: cast-shimmer 1.4s ease-in-out infinite;
 }

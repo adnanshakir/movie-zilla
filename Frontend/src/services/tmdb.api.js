@@ -25,6 +25,14 @@ const tmdb = {
   getUpcoming: (page = 1) =>
     `${TMDB_BASE_URL}/movie/upcoming?api_key=${API_KEY}&page=${page}`,
 
+  // Discover endpoint — supports language + genre filtering with pagination
+  discoverMovies: ({ lang, genre, page = 1 } = {}) => {
+    const params = new URLSearchParams({ api_key: API_KEY, page });
+    if (lang)  params.set("with_original_language", lang);
+    if (genre) params.set("with_genres", genre);
+    return `${TMDB_BASE_URL}/discover/movie?${params.toString()}`;
+  },
+
   getImageUrl: (path) => (path ? `https://image.tmdb.org/t/p/w342${path}` : null),
 };
 

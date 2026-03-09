@@ -28,7 +28,7 @@ const Cast = ({ movieId }) => {
   if (loading) {
     return (
       <div className="cast cast--loading">
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 12 }).map((_, i) => (
           <div key={i} className="cast__skeleton" />
         ))}
       </div>
@@ -40,26 +40,23 @@ const Cast = ({ movieId }) => {
   return (
     <section className="cast">
       <h2 className="cast__heading">Cast</h2>
-      <div className="cast__list">
+      <div className="cast-grid">
         {cast.map((member) => (
-          <div key={member.cast_id ?? member.id} className="cast__card">
-            <div className="cast__photo">
-              <img
-                src={
-                  member.profile_path
-                    ? tmdb.getImageUrl(member.profile_path)
-                    : PLACEHOLDER
-                }
-                alt={member.name}
-                loading="lazy"
-              />
-            </div>
-            <div className="cast__info">
-              <span className="cast__name">{member.name}</span>
-              {member.character && (
-                <span className="cast__character">{member.character}</span>
-              )}
-            </div>
+          <div key={member.cast_id ?? member.id} className="cast-card">
+            <img
+              className="cast-img"
+              src={
+                member.profile_path
+                  ? tmdb.getImageUrl(member.profile_path)
+                  : PLACEHOLDER
+              }
+              alt={member.name}
+              loading="lazy"
+            />
+            <span className="cast-name">{member.name}</span>
+            {member.character && (
+              <span className="cast-character">{member.character}</span>
+            )}
           </div>
         ))}
       </div>

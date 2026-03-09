@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import tmdb from "../../services/tmdb.api.js";
 import BackButton from "../../components/BackButton/BackButton.jsx";
 import Cast from "../../components/Cast/Cast.jsx";
+import Suggestions from "../../components/Suggestions/Suggestions.jsx";
 import "./movieDetails.scss";
 
 const MovieDetails = () => {
@@ -141,6 +142,9 @@ const MovieDetails = () => {
   if (!movie) return null;
 
   const posterUrl = tmdb.getImageUrl(movie.poster_path);
+  const backdropUrl = movie.backdrop_path
+    ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+    : null;
   const runtime = movie.runtime
     ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
     : null;
@@ -150,76 +154,113 @@ const MovieDetails = () => {
 
   return (
     <div className="movie-details">
-      <div className="movie-details__top-bar">
-        <BackButton disabled={showTrailer} />
-      </div>
-      <div className="movie-details__header">
-        {/* Poster */}
-        <div className="movie-details__poster">
-          {posterUrl ? (
-            <img src={posterUrl} alt={movie.title} />
-          ) : (
-            <div className="movie-details__poster-placeholder">No Image</div>
-          )}
-        </div>
-
-        {/* Info */}
-        <div className="movie-details__info">
-          <h1 className="movie-details__title">{movie.title}</h1>
-
-          <div className="movie-details__meta">
-            <span className="movie-details__rating">
-              ⭐ {movie.vote_average?.toFixed(1)}
-            </span>
-            {year && <span className="movie-details__date">{year}</span>}
-            {runtime && (
-              <span className="movie-details__runtime">{runtime}</span>
-            )}
+      {/* ── Hero: backdrop + poster + info ── */}
+      <div className="movie-details__hero">
+        {backdropUrl && (
+          <div
+            className="movie-details__backdrop"
+            style={{ backgroundImage: `url(${backdropUrl})` }}
+            aria-hidden="true"
+          />
+        )}
+        <div className="movie-details__hero-overlay" aria-hidden="true" />
+        <div className="movie-details__hero-content">
+          <div className="movie-details__top-bar">
+            <BackButton disabled={showTrailer} />
           </div>
 
-          {movie.genres?.length > 0 && (
-            <div className="movie-details__genres">
-              {movie.genres.map((g) => (
-                <span key={g.id} className="movie-details__genre-tag">
-                  {g.name}
+          <div className="movie-details__header">
+            {/* Poster column */}
+            <div className="movie-details__poster">
+              {posterUrl ? (
+                <img src={posterUrl} alt={movie.title} />
+              ) : (
+                <div className="movie-details__poster-placeholder">No Image</div>
+              )}
+            </div>
+
+            {/* Info column */}
+            <div className="movie-details__info">
+              <h1 className="movie-details__title">{movie.title}</h1>
+
+              <div className="movie-details__meta">
+                <span className="movie-details__rating">
+                  ⭐ {movie.vote_average?.toFixed(1)}
                 </span>
-              ))}
+                {year && <span className="movie-details__date">{year}</span>}
+                {runtime && (
+                  <span className="movie-details__runtime">{runtime}</span>
+                )}
+              </div>
+
+              {movie.genres?.length > 0 && (
+                <div className="movie-details__genres">
+                  {movie.genres.map((g) => (
+                    <span key={g.id} className="movie-details__genre-tag">
+                      {g.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <div className="movie-details__actions">
+                <button
+                  className={`btn btn--lg ${
+                    isFavorite ? "btn--outline" : "btn--primary"
+                  }`}
+                  onClick={toggleFavorite}
+                >
+                  {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                </button>
+
+                {trailer && (
+                  <button
+                    className="btn btn--outline btn--lg"
+                    onClick={() => setShowTrailer(true)}
+                  >
+                    ▶ Watch Trailer
+                  </button>
+                )}
+              </div>
             </div>
-          )}
-
-          {movie.overview && (
-            <div className="movie-details__overview">
-              <h3>Overview</h3>
-              <p>{movie.overview}</p>
-            </div>
-          )}
-
-          <div className="movie-details__actions">
-            <button
-              className={`btn btn--lg ${
-                isFavorite ? "btn--outline" : "btn--primary"
-              }`}
-              onClick={toggleFavorite}
-            >
-              {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-            </button>
-
-            {trailer && (
-              <button
-                className="btn btn--outline btn--lg"
-                onClick={() => setShowTrailer(true)}
-              >
-                ▶ Watch Trailer
-              </button>
-            )}
           </div>
         </div>
       </div>
 
-      {/* Cast section */}
+      {/* ── Trailer section (inline embed) ── */}
+      {trailer && (
+        <section className="movie-details__trailer-section">
+          <div className="movie-details__section-inner">
+            <h2 className="movie-details__section-heading">Trailer</h2>
+            <div className="movie-details__trailer-embed">
+              <iframe
+                src={`https://www.youtube.com/embed/${trailer.key}`}
+                title={`${movie.title} Trailer`}
+                allow="encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── Overview section ── */}
+      {movie.overview && (
+        <section className="movie-details__overview-section">
+          <div className="movie-details__section-inner">
+            <h2 className="movie-details__section-heading">Overview</h2>
+            <p className="movie-details__overview-text">{movie.overview}</p>
+          </div>
+        </section>
+      )}
+
+      {/* ── Cast section ── */}
       <Cast movieId={id} />
 
-      {/* Trailer modal */}
+      {/* ── Related suggestions ── */}
+      <Suggestions movieId={id} />
+
+      {/* ── Trailer modal (full-screen) ── */}
       {showTrailer && trailer && (
         <div
           className={`movie-details__modal-backdrop${

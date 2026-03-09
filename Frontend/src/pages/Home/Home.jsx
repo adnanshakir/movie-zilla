@@ -4,6 +4,7 @@ import tmdb from "../../services/tmdb.api.js";
 import MovieRow from "../../components/MovieRow/MovieRow.jsx";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import Footer from "../../components/Footer/Footer.jsx";
+import Filters from "../../components/Filters/Filters.jsx";
 import "./home.scss";
 
 const SLICE = 18;
@@ -87,6 +88,8 @@ const Home = () => {
           <span className="home-search__placeholder">Search movies&hellip;</span>
           <kbd className="home-search__kbd">S</kbd>
         </button>
+
+        <Filters />
 
         <MovieRow title="Trending"      movies={rows.trending}   loading={loading} seeMoreLink="/movies/trending" />
         <MovieRow title="Popular Movies" movies={rows.popular}    loading={loading} seeMoreLink="/movies/popular" />

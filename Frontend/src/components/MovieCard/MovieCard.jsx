@@ -9,33 +9,30 @@ const MovieCard = ({ movie }) => {
   if (!movie) {
     return (
       <div className="movie-card movie-card--skeleton" aria-hidden="true">
-        <div className="movie-card__poster-skeleton" />
-        <div className="movie-card__info">
+        <div className="movie-poster movie-poster--skeleton" />
+        <div className="movie-card__skeleton-info">
           <div className="movie-card__title-skeleton" />
-          <div className="movie-card__rating-skeleton" />
+          <div className="movie-card__year-skeleton" />
         </div>
       </div>
     );
   }
 
   const poster = movie.poster_path ? `${POSTER_BASE}${movie.poster_path}` : null;
+  const year = movie.release_date ? movie.release_date.slice(0, 4) : null;
 
   return (
     <Link to={`/movie/${movie.id}`} className="movie-card">
-      <div className="movie-card__poster">
+      <div className="movie-poster">
         {poster ? (
           <img src={poster} alt={movie.title} loading="lazy" />
         ) : (
           <div className="movie-card__placeholder">No Image</div>
         )}
+        <span className="movie-rating">⭐ {movie.vote_average?.toFixed(1) ?? "N/A"}</span>
       </div>
-
-      <div className="movie-card__info">
-        <h3 className="movie-card__title">{movie.title}</h3>
-        <span className="movie-card__rating">
-          ⭐ {movie.vote_average?.toFixed(1) ?? "N/A"}
-        </span>
-      </div>
+      <h3 className="movie-title">{movie.title}</h3>
+      {year && <span className="movie-year">{year}</span>}
     </Link>
   );
 };
