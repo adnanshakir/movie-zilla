@@ -5,6 +5,23 @@ import "./suggestions.scss";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const TMDB_BASE = "https://api.themoviedb.org/3";
 
+const getRandomPage = () => Math.floor(Math.random() * 20) + 1;
+
+const fetchFallbackRandomMovies = () => {
+  const randomPage = getRandomPage();
+  const url = `${TMDB_BASE}/discover/movie?api_key=${API_KEY}&sort_by=popularity.desc&page=${randomPage}`;
+
+  return fetch(url)
+    .then((res) => (res.ok ? res.json() : Promise.reject()))
+    .then((data) => {
+      const pool = data.results || [];
+      // Shuffle so fallback does not always look the same.
+      return [...pool]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 12);
+    });
+};
+
 const Suggestions = ({ movieId }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,9 +37,21 @@ const Suggestions = ({ movieId }) => {
     fetch(`${TMDB_BASE}/movie/${movieId}/recommendations?api_key=${API_KEY}`)
       .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
-        setMovies((data.results || []).slice(0, 12));
+        const related = (data.results || []).slice(0, 12);
+        if (related.length > 0) {
+          setMovies(related);
+          return;
+        }
+
+        return fetchFallbackRandomMovies().then((fallback) => {
+          setMovies(fallback);
+        });
       })
-      .catch(() => setMovies([]))
+      .catch(() => {
+        fetchFallbackRandomMovies()
+          .then((fallback) => setMovies(fallback))
+          .catch(() => setMovies([]));
+      })
       .finally(() => setLoading(false));
   }, [movieId]);
 

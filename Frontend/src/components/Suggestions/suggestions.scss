@@ -26,8 +26,7 @@
 .suggestions-row {
   display: flex;
   gap: 1rem;
-  overflow-x: auto;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   scrollbar-width: none;
   padding: 0.25rem 0 0.5rem;
 

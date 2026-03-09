@@ -5,7 +5,9 @@
   margin: 2rem auto 4rem;
   padding: 0 2rem;
 
-  @media (max-width: 640px) { padding: 0 1.25rem; }
+  @media (max-width: 640px) {
+    padding: 0 1.25rem;
+  }
 
   &__heading {
     font-size: 1.2rem;
@@ -32,10 +34,20 @@
   grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 
-  @media (max-width: 1100px) { grid-template-columns: repeat(5, 1fr); }
-  @media (max-width: 900px)  { grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
-  @media (max-width: 640px)  { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
-  @media (max-width: 400px)  { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+  }
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 // ── Individual cast card ──────────────────────────────────────────
@@ -45,12 +57,9 @@
   border-radius: $radius;
   overflow: hidden;
   text-align: center;
-  transition: transform $transition, box-shadow $transition;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
-  }
+  transition:
+    transform $transition,
+    box-shadow $transition;
 }
 
 // ── Portrait image ────────────────────────────────────────────────
@@ -90,8 +99,12 @@
 
 // ── Loading skeleton ──────────────────────────────────────────────
 @keyframes cast-shimmer {
-  0%   { background-position: -400px 0; }
-  100% { background-position:  400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 .cast--loading {
@@ -102,10 +115,19 @@
   margin: 2rem auto 4rem;
   padding: 0 2rem;
 
-  @media (max-width: 1100px) { grid-template-columns: repeat(5, 1fr); }
-  @media (max-width: 900px)  { grid-template-columns: repeat(4, 1fr); }
-  @media (max-width: 640px)  { grid-template-columns: repeat(3, 1fr); padding: 0 1.25rem; }
-  @media (max-width: 400px)  { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 1.25rem;
+  }
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .cast__skeleton {

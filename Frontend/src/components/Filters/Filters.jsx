@@ -24,10 +24,8 @@ const GENRES = [
 
 const Filters = ({ initialLangs = [], initialGenres = [] }) => {
   const navigate = useNavigate();
-  // Expanded by default on wide screens, collapsed on mobile
-  const [isOpen, setIsOpen] = useState(
-    () => typeof window !== "undefined" && window.innerWidth >= 1024,
-  );
+  // Keep filter panel initially closed on all devices.
+  const [isOpen, setIsOpen] = useState(false);
   const [selectedLangs, setSelectedLangs]   = useState(initialLangs);
   const [selectedGenres, setSelectedGenres] = useState(initialGenres);
 
