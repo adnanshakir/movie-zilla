@@ -139,6 +139,7 @@
   }
 
   &__poster {
+    image-rendering: auto;
     position: absolute;
     border-radius: $radius;
     background: var(--card);
@@ -229,6 +230,57 @@
 
     .hero__poster--front {
       transform: scale(1.05);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero__poster-stack {
+      width: 300px;
+      height: 450px;
+    }
+
+    .hero__poster--back {
+      width: 240px;
+      height: 360px;
+      top: 60px;
+      left: 80px;
+    }
+
+    .hero__poster--mid {
+      width: 250px;
+      height: 375px;
+      top: 30px;
+      left: 40px;
+    }
+
+    .hero__poster--front {
+      width: 260px;
+      height: 390px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero__poster-stack {
+      width: 360px;
+      height: 540px;
+    }
+
+    .hero__poster--back {
+      width: 280px;
+      height: 420px;
+      top: 80px;
+      left: 110px;
+    }
+
+    .hero__poster--mid {
+      width: 300px;
+      height: 450px;
+      top: 40px;
+      left: 55px;
+    }
+
+    .hero__poster--front {
+      width: 320px;
+      height: 480px;
     }
   }
 }

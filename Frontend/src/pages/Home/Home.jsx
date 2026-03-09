@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import tmdb from "../../services/tmdb.api.js";
-import MovieCard from "../../components/MovieCard/MovieCard";
-import "./home.scss";
+import MovieRow from "../../components/MovieRow/MovieRow.jsx";
 import Navbar from "../../components/Navbar/Navbar.jsx";
-import Hero from "../../components/hero/Hero.jsx";
+import "./home.scss";
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -19,19 +18,19 @@ const Home = () => {
   }, []);
 
   return (
-   <>
+    <>
       <Navbar />
-      <Hero />
 
       <div className="container trending-section">
-        <h2>Trending <span>Movies</span></h2>
+        <MovieRow title="Trending" url={tmdb.getTrending()} />
 
-        <div className="movie-grid">
-          {movies.map(movie => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
-        </div>
+        <MovieRow title="Popular Movies" url={tmdb.getPopular()} />
 
+        <MovieRow title="Top Rated" url={tmdb.getTopRated()} />
+
+        <MovieRow title="Now Playing" url={tmdb.getNowPlaying()} />
+
+        <MovieRow title="Upcoming" url={tmdb.getUpcoming()} />
       </div>
     </>
   );

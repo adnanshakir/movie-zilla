@@ -1,0 +1,74 @@
+.movie-row {
+  position: relative;
+  margin-bottom: 48px;
+
+  &__title {
+    position: relative;
+    z-index: 4;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+
+  &__list {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    padding: 0 20px 10px;
+  }
+
+  &__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Static cinematic fade on edges while row scrolls
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    bottom: -20px;
+    width: 80px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg), transparent);
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg), transparent);
+  }
+}
+
+@media (max-width: 768px) {
+  .movie-row {
+    margin-bottom: 52px;
+
+    &__title {
+      font-size: 1.35rem;
+      margin-bottom: 14px;
+      padding: 0 16px;
+    }
+
+    &__list {
+      gap: 1.1rem;
+      padding: 0 16px 8px;
+    }
+
+    &::before,
+    &::after {
+      top: -16px;
+      bottom: -16px;
+      width: 64px;
+    }
+  }
+}

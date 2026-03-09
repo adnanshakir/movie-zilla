@@ -1,9 +1,223 @@
-import React from 'react';
-import './movieDetails.scss';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import tmdb from "../../services/tmdb.api.js";
+import BackButton from "../../components/BackButton/BackButton.jsx";
+import "./movieDetails.scss";
 
 const MovieDetails = () => {
+  const { id } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const navigate = useNavigate();
+
+  // Fetch movie details from TMDB
+  useEffect(() => {
+    setLoading(true);
+    setError("");
+    fetch(tmdb.getMovieDetails(id))
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load movie");
+        return res.json();
+      })
+      .then((data) => {
+        setMovie(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || "Something went wrong");
+        setLoading(false);
+      });
+  }, [id]);
+
+  // Sync favorite state from localStorage whenever movie loads
+  useEffect(() => {
+    if (!movie) return;
+    try {
+      const saved = JSON.parse(localStorage.getItem("favorites") || "[]");
+      setIsFavorite(saved.some((m) => m.id === movie.id));
+    } catch {
+      setIsFavorite(false);
+    }
+  }, [movie]);
+
+  // Write to watch history when movie loads (latest first, no duplicates, max 20)
+  useEffect(() => {
+    if (!movie) return;
+    try {
+      const prev = JSON.parse(localStorage.getItem("history") || "[]");
+      const entry = {
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        vote_average: movie.vote_average ?? 0,
+      };
+      const updated = [
+        entry,
+        ...prev.filter((m) => m.id !== entry.id),
+      ].slice(0, 20);
+      localStorage.setItem("history", JSON.stringify(updated));
+    } catch {
+      // silent
+    }
+  }, [movie]);
+
+  // Close trailer modal on Escape key (<BackButton> handles Escape when trailer is closed)
+  useEffect(() => {
+    if (!showTrailer) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setShowTrailer(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showTrailer]);
+
+  const toggleFavorite = () => {
+    if (!movie) return;
+    try {
+      const saved = JSON.parse(localStorage.getItem("favorites") || "[]");
+      const updated = isFavorite
+        ? saved.filter((m) => m.id !== movie.id)
+        : [
+            ...saved,
+            {
+              id: movie.id,
+              title: movie.title,
+              poster_path: movie.poster_path,
+              vote_average: movie.vote_average ?? 0,
+            },
+          ];
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      setIsFavorite(!isFavorite);
+    } catch {}
+  };
+
+  const trailer = movie?.videos?.results?.find(
+    (v) => v.type === "Trailer" && v.site === "YouTube",
+  );
+
+  if (loading) {
+    return (
+      <div className="movie-details movie-details--loading">
+        <span className="movie-details__spinner" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="movie-details movie-details--error">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (!movie) return null;
+
+  const posterUrl = tmdb.getImageUrl(movie.poster_path);
+  const runtime = movie.runtime
+    ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
+    : null;
+  const year = movie.release_date
+    ? new Date(movie.release_date).getFullYear()
+    : null;
+
   return (
     <div className="movie-details">
+      <div className="movie-details__top-bar">
+        <BackButton disabled={showTrailer} />
+      </div>
+      <div className="movie-details__header">
+        {/* Poster */}
+        <div className="movie-details__poster">
+          {posterUrl ? (
+            <img src={posterUrl} alt={movie.title} />
+          ) : (
+            <div className="movie-details__poster-placeholder">No Image</div>
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="movie-details__info">
+          <h1 className="movie-details__title">{movie.title}</h1>
+
+          <div className="movie-details__meta">
+            <span className="movie-details__rating">
+              ⭐ {movie.vote_average?.toFixed(1)}
+            </span>
+            {year && <span className="movie-details__date">{year}</span>}
+            {runtime && (
+              <span className="movie-details__runtime">{runtime}</span>
+            )}
+          </div>
+
+          {movie.genres?.length > 0 && (
+            <div className="movie-details__genres">
+              {movie.genres.map((g) => (
+                <span key={g.id} className="movie-details__genre-tag">
+                  {g.name}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {movie.overview && (
+            <div className="movie-details__overview">
+              <h3>Overview</h3>
+              <p>{movie.overview}</p>
+            </div>
+          )}
+
+          <div className="movie-details__actions">
+            <button
+              className={`btn btn--lg ${
+                isFavorite ? "btn--outline" : "btn--primary"
+              }`}
+              onClick={toggleFavorite}
+            >
+              {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            </button>
+
+            {trailer && (
+              <button
+                className="btn btn--outline btn--lg"
+                onClick={() => setShowTrailer(true)}
+              >
+                ▶ Watch Trailer
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Trailer modal */}
+      {showTrailer && trailer && (
+        <div
+          className="movie-details__modal-backdrop"
+          onClick={() => setShowTrailer(false)}
+        >
+          <div
+            className="movie-details__modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="movie-details__modal-close"
+              onClick={() => setShowTrailer(false)}
+              aria-label="Close trailer"
+            >
+              ✕
+            </button>
+            <iframe
+              src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1`}
+              title={`${movie.title} Trailer`}
+              allow="autoplay; encrypted-media; fullscreen"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

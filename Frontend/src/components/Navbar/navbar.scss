@@ -1,4 +1,4 @@
-@use '../../styles/variables' as *;
+@use "../../styles/variables" as *;
 
 .navbar {
   position: sticky;
@@ -28,7 +28,7 @@
     color: var(--accent);
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     flex-shrink: 0;
   }
 
@@ -49,7 +49,7 @@
     white-space: nowrap;
 
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -4px;
       left: 0;
@@ -62,7 +62,9 @@
     &:hover,
     &.active {
       color: var(--text);
-      &::after { width: 100%; }
+      &::after {
+        width: 100%;
+      }
     }
   }
 
@@ -71,6 +73,29 @@
     align-items: center;
     gap: 0.75rem;
     flex-shrink: 0;
+  }
+
+  &__menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition:
+      background $transition,
+      color $transition,
+      border-color $transition;
+
+    &:hover {
+      background: var(--card-hover);
+      color: var(--text);
+      border-color: var(--text-secondary);
+    }
   }
 
   // Icon-only theme toggle button
@@ -85,7 +110,10 @@
     color: var(--text-secondary);
     border-radius: 8px;
     cursor: pointer;
-    transition: background $transition, color $transition, border-color $transition;
+    transition:
+      background $transition,
+      color $transition,
+      border-color $transition;
 
     &:hover {
       background: var(--card-hover);
@@ -93,19 +121,77 @@
       border-color: var(--text-secondary);
     }
 
-    svg { display: block; }
+    svg {
+      display: block;
+    }
+  }
+
+  &__mobile-menu {
+    display: none;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      max-height 0.28s ease,
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  &__mobile-link {
+    color: var(--text-secondary);
+    padding: 0.65rem 0.25rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--border);
+
+    &.active,
+    &:hover {
+      color: var(--text);
+    }
   }
 
   // Mobile
   @media (max-width: 640px) {
     &__inner {
       padding: 0 1rem;
-      gap: 1rem;
+      gap: 0.65rem;
       height: 60px;
     }
 
-    &__links { gap: 1.25rem; }
+    // Keep desktop nav hidden on mobile, use dropdown menu instead
+    &__links {
+      display: none;
+    }
 
-    &__logo { font-size: 1.1rem; }
+    &__logo {
+      font-size: 1.1rem;
+    }
+
+    &__actions {
+      gap: 0.45rem;
+    }
+
+    &__actions .btn {
+      padding: 0.35rem 0.7rem;
+      font-size: 0.78rem;
+    }
+
+    &__menu-btn {
+      display: inline-flex;
+    }
+
+    &__mobile-menu {
+      display: flex;
+      flex-direction: column;
+      background: var(--navbar-bg);
+      border-top: 1px solid var(--border);
+      padding: 0 1rem;
+
+      &.open {
+        max-height: 220px;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   }
 }

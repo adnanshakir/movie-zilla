@@ -14,17 +14,6 @@
   margin: 3rem 0;
 }
 
-// Movie grid
-.movie-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1.25rem;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
-}
-
 // Shared buttons — shadcn-inspired minimal style
 .btn {
   display: inline-flex;
