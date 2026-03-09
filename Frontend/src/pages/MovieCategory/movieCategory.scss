@@ -1,0 +1,77 @@
+@use "../../styles/variables" as *;
+
+.movie-category__container {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 6rem 2rem 5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.movie-category__top-bar {
+  margin-bottom: 1.75rem;
+}
+
+.movie-category__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2rem;
+}
+
+// ── Movie grid ──────────────────────────────────────────────
+.movie-category__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+// ── Infinite scroll sentinel & spinner ─────────────────────
+.movie-category__loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+  padding: 2rem 0;
+}
+
+.movie-category__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: mc-spin 0.7s linear infinite;
+}
+
+@keyframes mc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.movie-category__end {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.movie-category__not-found {
+  color: var(--text-secondary);
+  margin-top: 2rem;
+}
+
+// ── Responsive ─────────────────────────────────────────────
+@media (max-width: 768px) {
+  .movie-category__container {
+    padding: 5rem 1rem 4rem;
+  }
+
+  .movie-category__title {
+    font-size: 1.5rem;
+  }
+
+  .movie-category__grid {
+    gap: 1rem;
+  }
+}

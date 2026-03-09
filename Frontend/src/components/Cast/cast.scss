@@ -16,7 +16,7 @@
   &__list {
     display: flex;
     gap: 1rem;
-    overflow-x: auto;
+    flex-wrap: wrap;
     scrollbar-width: none;
     padding-bottom: 0.5rem;
 
@@ -28,17 +28,13 @@
   // ── Individual cast card ─────────────────────────────────
   &__card {
     flex-shrink: 0;
-    width: 110px;
+    width: 140px;
+    text-align: center;
     border-radius: $radius;
     overflow: hidden;
     background: var(--card);
     border: 1px solid var(--border);
     transition: transform $transition, box-shadow $transition;
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
-    }
   }
 
   // ── Photo ────────────────────────────────────────────────
@@ -55,10 +51,6 @@
       object-position: top center;
       transition: transform $transition;
     }
-  }
-
-  &__card:hover &__photo img {
-    transform: scale(1.05);
   }
 
   // ── Text info ────────────────────────────────────────────

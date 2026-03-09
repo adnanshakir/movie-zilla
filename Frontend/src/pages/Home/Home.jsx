@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import tmdb from "../../services/tmdb.api.js";
 import MovieRow from "../../components/MovieRow/MovieRow.jsx";
 import Navbar from "../../components/Navbar/Navbar.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
 import "./home.scss";
 
 const Home = () => {
@@ -48,12 +49,14 @@ const Home = () => {
           <kbd className="home-search__kbd">S</kbd>
         </button>
 
-        <MovieRow title="Trending" url={tmdb.getTrending()} />
-        <MovieRow title="Popular Movies" url={tmdb.getPopular()} />
-        <MovieRow title="Top Rated" url={tmdb.getTopRated()} />
-        <MovieRow title="Now Playing" url={tmdb.getNowPlaying()} />
-        <MovieRow title="Upcoming" url={tmdb.getUpcoming()} />
+        <MovieRow title="Trending" url={tmdb.getTrending()} seeMoreLink="/movies/trending" />
+        <MovieRow title="Popular Movies" url={tmdb.getPopular()} seeMoreLink="/movies/popular" />
+        <MovieRow title="Top Rated" url={tmdb.getTopRated()} seeMoreLink="/movies/top-rated" />
+        <MovieRow title="Now Playing" url={tmdb.getNowPlaying()} seeMoreLink="/movies/now-playing" />
+        <MovieRow title="Upcoming" url={tmdb.getUpcoming()} seeMoreLink="/movies/upcoming" />
       </div>
+
+      <Footer />
     </>
   );
 };
