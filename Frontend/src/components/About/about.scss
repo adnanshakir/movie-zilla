@@ -203,3 +203,39 @@
     }
   }
 }
+
+// ── Scroll-driven entry animations ─────────────────────────────
+// Uses CSS scroll-driven animations (Chrome 115+, Firefox 110+, Safari 18+).
+// Inside @supports so older browsers just see elements normally.
+@supports (animation-timeline: view()) {
+  .about__header {
+    animation: fadeUp 0.7s ease both;
+    animation-timeline: view();
+    animation-range: entry 30% cover 38%;
+  }
+
+  .about__card {
+    animation: fadeUp 0.65s ease both;
+    animation-timeline: view();
+    animation-range: entry 26% cover 34%;
+
+    &:nth-child(2) { animation-delay: 0.12s; }
+    &:nth-child(3) { animation-delay: 0.24s; }
+    &:nth-child(4) { animation-delay: 0.36s; }
+  }
+
+  .about__steps-header {
+    animation: fadeUp 0.65s ease both;
+    animation-timeline: view();
+    animation-range: entry 30% cover 38%;
+  }
+
+  .about__step {
+    animation: fadeUp 0.65s ease both;
+    animation-timeline: view();
+    animation-range: entry 24% cover 34%;
+
+    &:nth-child(2) { animation-delay: 0.14s; }
+    &:nth-child(3) { animation-delay: 0.28s; }
+  }
+}

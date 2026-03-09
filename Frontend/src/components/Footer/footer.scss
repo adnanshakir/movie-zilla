@@ -95,3 +95,11 @@
     }
   }
 }
+
+@supports (animation-timeline: view()) {
+  .footer__content {
+    animation: fadeUp 0.65s ease both;
+    animation-timeline: view();
+    animation-range: entry 35% cover 42%;
+  }
+}

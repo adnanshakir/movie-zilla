@@ -162,14 +162,18 @@
     // Hide desktop links — replaced by dropdown
     &__links { display: none; }
 
-    // Hide logout from action bar — it's inside the dropdown
-    &__logout-desktop { display: none; }
+    // Keep logout visible in action bar on mobile when enabled by route/auth logic.
+    &__logout-desktop { display: inline-flex; }
 
     &__actions { gap: 0.45rem; }
 
     &__actions .btn {
       padding: 0.35rem 0.7rem;
       font-size: 0.78rem;
+    }
+
+    &__signup-desktop {
+      display: none;
     }
 
     // Show hamburger toggle

@@ -2,6 +2,38 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import userModel from "../models/user.model.js";
 
+function getCookieOptions() {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  return {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
+  };
+}
+
+function clearAuthCookie(res) {
+  // Clear common variants to avoid stale cookies surviving env/config changes.
+  const variants = [
+    { path: "/" },
+    { path: "/", sameSite: "lax" },
+    { path: "/", sameSite: "strict" },
+    { path: "/", sameSite: "none", secure: true },
+    { path: "/", sameSite: "none", secure: false },
+  ];
+
+  variants.forEach((opts) => {
+    res.clearCookie("token", opts);
+    res.cookie("token", "", {
+      ...opts,
+      httpOnly: true,
+      expires: new Date(0),
+      maxAge: 0,
+    });
+  });
+}
+
 async function registerUser(req, res) {
   const { username, email, password } = req.body;
 
@@ -31,12 +63,7 @@ async function registerUser(req, res) {
     },
   );
 
-  res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/",
-});
+  res.cookie("token", token, getCookieOptions());
 
   return res.status(201).json({
     message: "User registered successfully!",
@@ -80,12 +107,7 @@ async function loginUser(req, res) {
     { expiresIn: "3d" },
   );
 
-  res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/",
-});
+  res.cookie("token", token, getCookieOptions());
   return res.status(200).json({
     message: "Logged in successfully!",
     user: {
@@ -99,6 +121,8 @@ async function loginUser(req, res) {
 async function getMe(req, res) {
   const user = await userModel.findById(req.user.id);
 
+  res.set("Cache-Control", "no-store");
+
   res.status(200).json({
     message: "User details fecthed!",
     user,
@@ -106,7 +130,8 @@ async function getMe(req, res) {
 }
 
 async function logoutUser(req, res) {
-  res.clearCookie("token");
+  clearAuthCookie(res);
+  res.set("Cache-Control", "no-store");
 
   return res.status(200).json({
     message: "Logout successfully!",

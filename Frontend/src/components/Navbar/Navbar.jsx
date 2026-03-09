@@ -28,10 +28,11 @@ const MoonIcon = () => (
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
-  const isLoggedIn = localStorage.getItem("user");
   const location = useLocation();
   const isLanding = location.pathname === "/";
-  const { logout } = useAuth();
+  const isHome = location.pathname === "/home";
+  const { user, logout } = useAuth();
+  const isLoggedIn = Boolean(user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navRef = useRef(null);
 
@@ -57,6 +58,9 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
+  const showLandingLogin = isLanding && !isLoggedIn;
+  const showLogoutInActions = isLoggedIn && isHome;
+
   return (
     <nav className="navbar" ref={navRef}>
       <div className="navbar__inner">
@@ -76,15 +80,14 @@ const Navbar = () => {
 
         <div className="navbar__actions">
           {/* Landing page CTAs */}
-          {isLanding && !isLoggedIn && (
+          {showLandingLogin && (
             <>
               <Link to="/login" className="btn btn--outline btn--sm">Login</Link>
-              <Link to="/register" className="btn btn--primary btn--sm">Sign Up</Link>
+              <Link to="/register" className="btn btn--primary btn--sm navbar__signup-desktop">Sign Up</Link>
             </>
           )}
 
-          {/* Logout — desktop only; mobile version lives in the dropdown */}
-          {isLoggedIn && (
+          {showLogoutInActions && (
             <button className="btn btn--outline btn--sm navbar__logout-desktop" onClick={handleLogout}>
               Logout
             </button>
@@ -135,7 +138,6 @@ const Navbar = () => {
           <NavLink to="/history"
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
             onClick={() => setIsMenuOpen(false)}>History</NavLink>
-          <button className="navbar__mobile-logout" onClick={handleLogout}>Logout</button>
         </div>
       )}
     </nav>

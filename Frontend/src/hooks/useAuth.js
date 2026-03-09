@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getMe,
   loginUser as apiLoginUser,
@@ -9,10 +9,25 @@ import {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Shared across all hook instances to ignore stale auth responses.
+let authStateVersion = 0;
+let hasRunBootstrapAuthCheck = false;
+let didLogoutThisPageLoad = false;
+const MANUAL_LOGOUT_FLAG = "manualLogout";
+
 function useAuth() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const clearClientAuthState = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("history");
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("accessToken");
+  };
 
   const [user, setUser] = useState(() => {
     try {
@@ -31,11 +46,28 @@ function useAuth() {
   useEffect(() => {
     let isMounted = true;
 
+    const shouldRunBootstrapCheck =
+      !hasRunBootstrapAuthCheck &&
+      !didLogoutThisPageLoad &&
+      sessionStorage.getItem(MANUAL_LOGOUT_FLAG) !== "1" &&
+      location.pathname === "/";
+
+    if (!shouldRunBootstrapCheck) {
+      setLoading(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    hasRunBootstrapAuthCheck = true;
+
     const checkAuth = async () => {
+      const requestVersion = authStateVersion;
+
       try {
         const data = await getMe();
 
-        if (!isMounted) {
+        if (!isMounted || requestVersion !== authStateVersion) {
           return;
         }
 
@@ -44,15 +76,15 @@ function useAuth() {
         if (data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
         } else {
-          localStorage.removeItem("user");
+          clearClientAuthState();
         }
       } catch {
-        if (!isMounted) {
+        if (!isMounted || requestVersion !== authStateVersion) {
           return;
         }
 
         setUser(null);
-        localStorage.removeItem("user");
+        clearClientAuthState();
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -65,7 +97,7 @@ function useAuth() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [location.pathname]);
 
   const clearError = () => setError("");
 
@@ -92,6 +124,7 @@ function useAuth() {
         : { username: identifier, password };
 
       const data = await apiLoginUser(payload);
+      sessionStorage.removeItem(MANUAL_LOGOUT_FLAG);
 
       setUser(data.user || null);
       if (data.user) {
@@ -133,6 +166,7 @@ function useAuth() {
 
     try {
       const data = await apiRegisterUser({ username, email, password });
+      sessionStorage.removeItem(MANUAL_LOGOUT_FLAG);
 
       setUser(data.user || null);
       if (data.user) {
@@ -150,6 +184,12 @@ function useAuth() {
   };
 
   const logout = async () => {
+    // Invalidate any in-flight getMe request from other mounted components.
+    authStateVersion += 1;
+    didLogoutThisPageLoad = true;
+    hasRunBootstrapAuthCheck = true;
+    sessionStorage.setItem(MANUAL_LOGOUT_FLAG, "1");
+
     setLoading(true);
     setError("");
 
@@ -159,7 +199,7 @@ function useAuth() {
       setError(err.message || "Logout failed");
     } finally {
       setUser(null);
-      localStorage.removeItem("user");
+      clearClientAuthState();
       setLoading(false);
       navigate("/");
     }
