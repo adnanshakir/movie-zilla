@@ -7,6 +7,7 @@ import Home from "./pages/Home/Home";
 import Favorites from "./pages/Favorites/Favorites";
 import History from "./pages/History/History";
 import MovieDetails from "./pages/MovieDetails/MovieDetails";
+import Search from "./pages/Search/Search";
 import ProtectedRoute from "./utils/Protected";
 
 const router = createBrowserRouter([
@@ -48,6 +49,15 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <MovieDetails />
+      </ProtectedRoute>
+    ),
+  },
+
+  {
+    path: "/search",
+    element: (
+      <ProtectedRoute>
+        <Search />
       </ProtectedRoute>
     ),
   },

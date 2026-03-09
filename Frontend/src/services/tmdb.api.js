@@ -11,6 +11,9 @@ const tmdb = {
   getMovieDetails: (id) =>
     `${TMDB_BASE_URL}/movie/${id}?api_key=${API_KEY}&append_to_response=videos`,
 
+  getMovieCredits: (id) =>
+    `${TMDB_BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`,
+
   searchMovies: (query, page = 1) =>
     `${TMDB_BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${page}`,
 

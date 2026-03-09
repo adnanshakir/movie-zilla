@@ -9,7 +9,7 @@ const MovieCard = ({ movie }) => {
     <Link to={`/movie/${movie.id}`} className="movie-card">
       <div className="movie-card__poster">
         {poster ? (
-          <img src={poster} alt={movie.title} />
+          <img src={poster} alt={movie.title} loading="lazy" />
         ) : (
           <div className="movie-card__placeholder">No Image</div>
         )}

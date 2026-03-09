@@ -35,8 +35,8 @@ const Favorites = () => {
       {favorites.length === 0 ? (
         <div className="favorites__empty">
           <div className="favorites__empty-icon">♡</div>
-          <h2>Your favorites list is empty</h2>
-          <p>Start saving movies you want to watch.</p>
+          <h2>No favorites yet</h2>
+          <p>You haven&apos;t added any favorites yet.</p>
         </div>
       ) : (
         <div className="favorites__grid">

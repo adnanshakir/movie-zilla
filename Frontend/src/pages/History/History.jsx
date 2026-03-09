@@ -38,8 +38,8 @@ const History = () => {
       {history.length === 0 ? (
         <div className="history__empty">
           <div className="history__empty-icon">&#128336;</div>
-          <h2>Nothing here yet</h2>
-          <p>You haven&apos;t watched anything yet.</p>
+          <h2>No movies watched yet</h2>
+          <p>Start exploring to build your history.</p>
         </div>
       ) : (
         <div className="history__grid">

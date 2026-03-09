@@ -236,6 +236,25 @@
     }
   }
 
+  // Closing animations
+  &__modal-backdrop--closing {
+    animation: md-fade-out 0.2s ease forwards;
+  }
+
+  &__modal--closing {
+    animation: md-slide-down 0.2s ease forwards;
+  }
+
+  @keyframes md-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  @keyframes md-slide-down {
+    from { transform: translateY(0);    opacity: 1; }
+    to   { transform: translateY(28px); opacity: 0; }
+  }
+
   &__modal-close {
     position: absolute;
     top: 0.75rem;

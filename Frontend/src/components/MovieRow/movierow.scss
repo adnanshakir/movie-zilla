@@ -26,6 +26,24 @@
     display: none;
   }
 
+  // Error fallback
+  &__error {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 20px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+
+    span {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+
+    p { margin: 0; }
+  }
+
   // Static cinematic fade on edges while row scrolls
   &::before,
   &::after {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import tmdb from "../../services/tmdb.api.js";
 import BackButton from "../../components/BackButton/BackButton.jsx";
+import Cast from "../../components/Cast/Cast.jsx";
 import "./movieDetails.scss";
 
 const MovieDetails = () => {
@@ -11,6 +12,7 @@ const MovieDetails = () => {
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const navigate = useNavigate();
 
   // Fetch movie details from TMDB
@@ -64,11 +66,25 @@ const MovieDetails = () => {
     }
   }, [movie]);
 
+  // Lock page scroll while trailer modal is open
+  useEffect(() => {
+    document.body.style.overflow = showTrailer ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showTrailer]);
+
   // Close trailer modal on Escape key (<BackButton> handles Escape when trailer is closed)
   useEffect(() => {
     if (!showTrailer) return;
     const onKey = (e) => {
-      if (e.key === "Escape") setShowTrailer(false);
+      if (e.key === "Escape") {
+        setIsClosing(true);
+        setTimeout(() => {
+          setShowTrailer(false);
+          setIsClosing(false);
+        }, 200);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -92,6 +108,14 @@ const MovieDetails = () => {
       localStorage.setItem("favorites", JSON.stringify(updated));
       setIsFavorite(!isFavorite);
     } catch {}
+  };
+
+  const closeTrailer = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setShowTrailer(false);
+      setIsClosing(false);
+    }, 200);
   };
 
   const trailer = movie?.videos?.results?.find(
@@ -192,19 +216,26 @@ const MovieDetails = () => {
         </div>
       </div>
 
+      {/* Cast section */}
+      <Cast movieId={id} />
+
       {/* Trailer modal */}
       {showTrailer && trailer && (
         <div
-          className="movie-details__modal-backdrop"
-          onClick={() => setShowTrailer(false)}
+          className={`movie-details__modal-backdrop${
+            isClosing ? " movie-details__modal-backdrop--closing" : ""
+          }`}
+          onClick={closeTrailer}
         >
           <div
-            className="movie-details__modal"
+            className={`movie-details__modal${
+              isClosing ? " movie-details__modal--closing" : ""
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
             <button
               className="movie-details__modal-close"
-              onClick={() => setShowTrailer(false)}
+              onClick={closeTrailer}
               aria-label="Close trailer"
             >
               ✕
