@@ -10,19 +10,25 @@ import { globalErrorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
 
-// Middlewares
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors({
+// CORS must be first — before body parsers — so every response
+// (including error responses) carries the correct CORS headers.
+const corsOptions = {
   origin: [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    process.env.FRONTEND_URL
-  ],
-  credentials: true
-}));
+    process.env.FRONTEND_URL,
+  ].filter(Boolean),
+  credentials: true,
+};
 
-app.options("*", cors());
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+
+// Body parsers after CORS
+app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRouter);
