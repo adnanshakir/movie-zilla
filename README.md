@@ -37,44 +37,79 @@ The project focuses on building a <b>clean, responsive, and performant UI</b> wh
 </ul>
 
 <hr>
-
-<h2>🛠 Tech Stack</h2>
-
-<ul>
-<li><b>React</b> – Frontend framework</li>
-<li><b>JavaScript (ES6+)</b> – Core programming language</li>
-<li><b>CSS / SCSS</b> – Styling and layout</li>
-<li><b>REST API</b> – Movie data integration</li>
-<li><b>React Router</b> – Client-side routing</li>
-</ul>
-
-<hr>
-
 <h2>📷 Screenshots</h2>
 
 <p>
 <img width="1898" height="946" alt="image" src="https://github.com/user-attachments/assets/a01f059f-abc1-442c-aa42-9fb3d7ef8cba" />
 </p>
 
-<ul>
-<li>Homepage</li>
-<li>Movie detail page</li>
-<li>Search functionality</li>
-<li>Responsive mobile layout</li>
-</ul>
-
-<hr>
-
-<h2>🚀 Live Demo</h2>
+<h3>🚀 Live Demo</h3>
 
 <p>
 🌐 <b>Live Website:</b> <a href="http://movie-zilla-lemon.vercel.app/">MovieZilla Live</a>
 </p>
 
-<hr>
 
-<h2>📌 Project Goal</h2>
+---
 
-<p>
-This project was built to strengthen my skills in <b>React application architecture, API integration, and responsive UI development</b> while building a real-world project that mimics modern streaming platform interfaces.
-</p>
+# 🛠️ Tech Stack
+
+### Frontend
+- React (Vite)
+- React Router
+- SCSS
+- Context API
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+
+### APIs
+- TMDB API
+
+### Authentication
+- JWT Authentication
+- HttpOnly Cookies
+
+### Deployment
+- Frontend → Vercel
+- Backend → Render
+- Database → MongoDB Atlas
+
+---
+
+# 🔐 Authentication System
+
+- User registration
+- Login/logout
+- Secure JWT authentication
+- Cookie-based sessions
+- Protected routes
+
+---
+
+# 📈 Learning Goals
+
+This project was built to practice:
+
+- Full-stack MERN development
+- Clean UI/UX design
+- API integration
+- Scalable React architecture
+- Authentication flows
+- Production deployment
+- Performance optimization
+
+---
+
+# 👨‍💻 Author
+
+Built by **Adnan**
+
+- X: https://x.com/adnanxshakir
+
+---
+
+⭐ If you like this project, consider starring the repo!
