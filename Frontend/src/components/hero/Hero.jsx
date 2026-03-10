@@ -47,7 +47,7 @@ const Hero = () => {
           </h1>
 
           <p className="hero__desc">
-            CineScope helps you discover what's trending, preview trailers
+            MovieZilla helps you discover what's trending, preview trailers
             before committing, and build a list that actually reflects your
             taste.
           </p>
