@@ -21,8 +21,6 @@ const corsOptions = {
   credentials: true,
 };
 
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-
 app.use(cors(corsOptions));
 
 

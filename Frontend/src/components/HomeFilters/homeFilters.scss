@@ -1,0 +1,234 @@
+@use "../../styles/variables" as *;
+
+// ── Wrapper ───────────────────────────────────────────────────────
+.hf-wrapper {
+  margin-bottom: 1.75rem;
+}
+
+// ── Quick filter row ──────────────────────────────────────────────
+.hf-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.hf-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+// Thin vertical divider between groups
+.hf-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+
+  @media (max-width: 480px) { display: none; }
+}
+
+// ── Quick-select pills (Type + Rating) ────────────────────────────
+.hf-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.28rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background $transition,
+    color $transition,
+    border-color $transition;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  &--active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+
+    &:hover {
+      background: var(--accent-hover, #f40612);
+      border-color: var(--accent-hover, #f40612);
+    }
+  }
+}
+
+// ── "More filters" toggle button ─────────────────────────────────
+.hf-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.28rem 0.85rem;
+  border-radius: $radius;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  margin-left: auto;
+  transition: border-color $transition, background $transition;
+
+  &:hover { border-color: var(--accent); }
+
+  &--open {
+    border-color: var(--accent);
+    background: var(--card-hover, #2a2a2a);
+  }
+}
+
+.hf-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hf-chevron {
+  transition: transform $transition;
+
+  .hf-more--open & {
+    transform: rotate(180deg);
+  }
+}
+
+// ── Collapsible panel ─────────────────────────────────────────────
+.hf-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+  margin-top: 0.45rem;
+
+  &--open {
+    grid-template-rows: 1fr;
+  }
+}
+
+.hf-panel__inner {
+  overflow: hidden;
+  padding: 0;
+  background: var(--card);
+  border-radius: $radius;
+  border: 1px solid transparent;
+  transition: padding $transition, border-color $transition;
+
+  .hf-panel--open & {
+    padding: 1rem 1.25rem 0.75rem;
+    border-color: var(--border);
+  }
+}
+
+// ── Section inside panel ──────────────────────────────────────────
+.hf-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.hf-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+
+  @media (max-width: 640px) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+// ── Chip buttons inside panel ─────────────────────────────────────
+.hf-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 0.77rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background $transition,
+    color $transition,
+    border-color $transition;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  &--active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+
+    &:hover {
+      background: var(--accent-hover, #f40612);
+      border-color: var(--accent-hover, #f40612);
+    }
+  }
+}
+
+// ── Reset row ─────────────────────────────────────────────────────
+.hf-actions {
+  padding-top: 0.7rem;
+  margin-top: 0.15rem;
+  border-top: 1px solid var(--border);
+}
+
+.hf-reset {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color $transition, border-color $transition;
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--text-secondary);
+  }
+}

@@ -1,0 +1,291 @@
+@use "../../styles/variables" as *;
+
+// ── Hero container ───────────────────────────────────────────────
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 76vh;
+  overflow: hidden;
+
+  @media (max-width: 640px) {
+    min-height: 88vh;
+  }
+
+  &--skeleton {
+    min-height: 76vh;
+    background: linear-gradient(
+      135deg,
+      var(--card) 0%,
+      var(--card-hover, #2a2a2a) 50%,
+      var(--card) 100%
+    );
+    background-size: 400% 400%;
+    animation: hero-pulse 2.5s ease infinite;
+
+    @keyframes hero-pulse {
+      0%, 100% { background-position: 0% 50%; }
+      50%       { background-position: 100% 50%; }
+    }
+  }
+}
+
+// ── Backdrop ─────────────────────────────────────────────────────
+.hero__backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+
+  &--visible {
+    opacity: 1;
+  }
+}
+
+// ── Gradient overlay ─────────────────────────────────────────────
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 20, 20, 0.08) 0%,
+    rgba(20, 20, 20, 0.25) 35%,
+    rgba(20, 20, 20, 0.72) 65%,
+    rgba(20, 20, 20, 0.97) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+// ── Content ──────────────────────────────────────────────────────
+.hero__content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding-bottom: 3.5rem;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.42s ease, transform 0.42s ease;
+
+  &--visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  @media (max-width: 640px) {
+    padding-bottom: 4.5rem;
+  }
+}
+
+// Body — caps max-width so text doesn't stretch too wide
+.hero__body {
+  max-width: 600px;
+}
+
+// ── Meta row (year + rating) ──────────────────────────────────────
+.hero__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.hero__year {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+}
+
+.hero__rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f5c518;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.18rem 0.52rem;
+  border-radius: 999px;
+}
+
+// ── Title ─────────────────────────────────────────────────────────
+.hero__title {
+  font-size: clamp(1.75rem, 4.5vw, 2.9rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.75rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+
+  @media (max-width: 480px) {
+    font-size: 1.65rem;
+  }
+}
+
+// ── Overview ─────────────────────────────────────────────────────
+.hero__overview {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 1.4rem;
+  max-width: 540px;
+
+  @media (max-width: 480px) {
+    font-size: 0.82rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 1.1rem;
+  }
+}
+
+// ── Action buttons ───────────────────────────────────────────────
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.6rem;
+  flex-wrap: wrap;
+}
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.58rem 1.35rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  white-space: nowrap;
+
+  &:active { transform: scale(0.96); }
+
+  &--watch {
+    background: $accent;
+    color: #fff;
+
+    &:hover {
+      background: #f40612;
+      box-shadow: 0 4px 20px rgba(229, 9, 20, 0.5);
+    }
+  }
+
+  &--details {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.24);
+    }
+  }
+
+  @media (max-width: 400px) {
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+  }
+}
+
+// ── Search bar inside hero ────────────────────────────────────────
+.hero__search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 480px;
+  height: 44px;
+  padding: 0 0.95rem;
+  background: rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.19);
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+  }
+
+  &-icon {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  &-placeholder {
+    flex: 1;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.58);
+  }
+
+  &-kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    min-width: 20px;
+    padding: 0 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.67rem;
+    font-family: inherit;
+    flex-shrink: 0;
+
+    @media (max-width: 480px) { display: none; }
+  }
+}
+
+// ── Dot navigation ────────────────────────────────────────────────
+.hero__dots {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 3;
+
+  @media (max-width: 480px) {
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+.hero__dot {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.32);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.25s ease, width 0.25s ease, border-radius 0.25s ease;
+
+  &--active {
+    background: $accent;
+    width: 20px;
+    border-radius: 4px;
+  }
+
+  &:hover:not(&--active) {
+    background: rgba(255, 255, 255, 0.6);
+  }
+}
