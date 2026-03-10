@@ -131,7 +131,7 @@ function useAuth() {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      navigate("/home");
+      navigate(location.state?.from?.pathname ?? "/", { replace: true });
       return true;
     } catch (err) {
       setError(err.message || "Login failed");
@@ -173,7 +173,7 @@ function useAuth() {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      navigate("/home");
+      navigate(location.state?.from?.pathname ?? "/", { replace: true });
       return true;
     } catch (err) {
       setError(err.message || "Registration failed");

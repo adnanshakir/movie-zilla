@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import tmdb from "../../services/tmdb.api.js";
 import "./cast.scss";
 
@@ -8,6 +9,7 @@ const PLACEHOLDER =
 const Cast = ({ movieId }) => {
   const [cast, setCast] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!movieId) return;
@@ -42,7 +44,13 @@ const Cast = ({ movieId }) => {
       <h2 className="cast__heading">Cast</h2>
       <div className="cast-grid">
         {cast.map((member) => (
-          <div key={member.cast_id ?? member.id} className="cast-card">
+          <button
+            key={member.cast_id ?? member.id}
+            className="cast-card"
+            onClick={() => navigate(`/person/${member.id}`)}
+            type="button"
+            aria-label={`View ${member.name}'s profile`}
+          >
             <img
               className="cast-img"
               src={
@@ -57,7 +65,7 @@ const Cast = ({ movieId }) => {
             {member.character && (
               <span className="cast-character">{member.character}</span>
             )}
-          </div>
+          </button>
         ))}
       </div>
     </section>

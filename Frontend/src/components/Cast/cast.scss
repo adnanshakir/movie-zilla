@@ -57,6 +57,10 @@
   border-radius: $radius;
   overflow: hidden;
   text-align: center;
+  cursor: pointer;
+  appearance: none;
+  padding: 0;
+  width: 100%;
   transition:
     transform $transition,
     box-shadow $transition;

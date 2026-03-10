@@ -34,6 +34,16 @@ const tmdb = {
   },
 
   getImageUrl: (path) => (path ? `https://image.tmdb.org/t/p/w342${path}` : null),
+
+  // ── Person / Actor endpoints ──────────────────────────────────
+  getPerson: (id) =>
+    `${TMDB_BASE_URL}/person/${id}?api_key=${API_KEY}`,
+
+  getPersonMovieCredits: (id) =>
+    `${TMDB_BASE_URL}/person/${id}/movie_credits?api_key=${API_KEY}`,
+
+  getPersonImageUrl: (path, size = "w300") =>
+    path ? `https://image.tmdb.org/t/p/${size}${path}` : null,
 };
 
 export default tmdb;

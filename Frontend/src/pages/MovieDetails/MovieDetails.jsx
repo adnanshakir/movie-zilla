@@ -1,20 +1,30 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import tmdb from "../../services/tmdb.api.js";
 import BackButton from "../../components/BackButton/BackButton.jsx";
 import Cast from "../../components/Cast/Cast.jsx";
 import Suggestions from "../../components/Suggestions/Suggestions.jsx";
+import useWatchlist from "../../hooks/useWatchlist.js";
 import "./movieDetails.scss";
 
 const MovieDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isInWatchlist, toggleWatchlist } = useWatchlist();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const navigate = useNavigate();
+
+  // Helper: redirect unauthenticated users to login, preserving where they came from
+  const requireAuth = () => {
+    if (localStorage.getItem("user")) return true;
+    navigate("/login", { state: { from: location } });
+    return false;
+  };
 
   // Fetch movie details from TMDB
   useEffect(() => {
@@ -93,6 +103,7 @@ const MovieDetails = () => {
 
   const toggleFavorite = () => {
     if (!movie) return;
+    if (!requireAuth()) return;
     try {
       const saved = JSON.parse(localStorage.getItem("favorites") || "[]");
       const updated = isFavorite
@@ -211,6 +222,18 @@ const MovieDetails = () => {
                   onClick={toggleFavorite}
                 >
                   {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                </button>
+
+                <button
+                  className={`btn btn--lg ${
+                    movie && isInWatchlist(movie.id) ? "btn--outline" : "btn--outline"
+                  }`}
+                  onClick={() => {
+                    if (!requireAuth()) return;
+                    toggleWatchlist(movie);
+                  }}
+                >
+                  {movie && isInWatchlist(movie.id) ? "✓ In Watchlist" : "+ Watchlist"}
                 </button>
 
                 {trailer && (

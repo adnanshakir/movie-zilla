@@ -29,19 +29,17 @@ const MoonIcon = () => (
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-  const isLanding = location.pathname === "/";
-  const isHome = location.pathname === "/home";
   const { user, logout } = useAuth();
   const isLoggedIn = Boolean(user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navRef = useRef(null);
 
-  // Close on route change
+  // Close dropdown on route change
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Close when clicking outside the navbar
+  // Close dropdown when clicking outside
   useEffect(() => {
     if (!isMenuOpen) return;
     const handler = (e) => {
@@ -54,23 +52,23 @@ const Navbar = () => {
   }, [isMenuOpen]);
 
   const handleLogout = async () => {
-    await logout();
     setIsMenuOpen(false);
+    await logout();
   };
-
-  const showLandingLogin = isLanding && !isLoggedIn;
-  const showLogoutInActions = isLoggedIn && isHome;
 
   return (
     <nav className="navbar" ref={navRef}>
       <div className="navbar__inner">
         <Link to="/" className="navbar__logo">MovieZilla</Link>
 
-        {/* Desktop centre links */}
+        {/* Desktop centre links — authenticated users only */}
         {isLoggedIn && (
           <div className="navbar__links">
-            <NavLink to="/home"
+            <NavLink to="/"
+              end
               className={({ isActive }) => `navbar__link${isActive ? " active" : ""}`}>Home</NavLink>
+            <NavLink to="/watchlist"
+              className={({ isActive }) => `navbar__link${isActive ? " active" : ""}`}>Watchlist</NavLink>
             <NavLink to="/favorites"
               className={({ isActive }) => `navbar__link${isActive ? " active" : ""}`}>Favorites</NavLink>
             <NavLink to="/history"
@@ -79,16 +77,20 @@ const Navbar = () => {
         )}
 
         <div className="navbar__actions">
-          {/* Landing page CTAs */}
-          {showLandingLogin && (
+          {/* Guest CTAs */}
+          {!isLoggedIn && (
             <>
               <Link to="/login" className="btn btn--outline btn--sm">Login</Link>
               <Link to="/register" className="btn btn--primary btn--sm navbar__signup-desktop">Sign Up</Link>
             </>
           )}
 
-          {showLogoutInActions && (
-            <button className="btn btn--outline btn--sm navbar__logout-desktop" onClick={handleLogout}>
+          {/* Authenticated: Logout (desktop) */}
+          {isLoggedIn && (
+            <button
+              className="btn btn--outline btn--sm navbar__logout-desktop"
+              onClick={handleLogout}
+            >
               Logout
             </button>
           )}
@@ -99,7 +101,7 @@ const Navbar = () => {
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
 
-          {/* Hamburger / Close — mobile only */}
+          {/* Hamburger — mobile, authenticated only */}
           {isLoggedIn && (
             <button
               className="navbar__menu-btn"
@@ -126,18 +128,25 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile dropdown */}
+      {/* Mobile dropdown — authenticated */}
       {isLoggedIn && (
         <div className={`navbar__mobile-menu${isMenuOpen ? " open" : ""}`}>
-          <NavLink to="/home"
+          <NavLink to="/"
+            end
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
             onClick={() => setIsMenuOpen(false)}>Home</NavLink>
+          <NavLink to="/watchlist"
+            className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
+            onClick={() => setIsMenuOpen(false)}>Watchlist</NavLink>
           <NavLink to="/favorites"
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
             onClick={() => setIsMenuOpen(false)}>Favorites</NavLink>
           <NavLink to="/history"
             className={({ isActive }) => `navbar__mobile-link${isActive ? " active" : ""}`}
             onClick={() => setIsMenuOpen(false)}>History</NavLink>
+          <button className="navbar__mobile-logout" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       )}
     </nav>

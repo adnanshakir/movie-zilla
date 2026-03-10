@@ -1,0 +1,297 @@
+@use "../../styles/variables" as *;
+
+@keyframes pp-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pp-shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+// ── Page wrapper ──────────────────────────────────────────────────
+.person-page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-x: hidden;
+
+  // ── Loading ───────────────────────────────────────────────
+  &--loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+  }
+
+  &__spinner {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: pp-spin 0.75s linear infinite;
+  }
+
+  // ── Error ─────────────────────────────────────────────────
+  &--error {
+    padding: 5rem 2rem 3rem;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--text-secondary);
+
+    p { margin-top: 2rem; font-size: 1rem; }
+  }
+}
+
+// ── Full-bleed blurred backdrop ───────────────────────────────────
+.person-page__backdrop {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  filter: blur(55px) saturate(0.4);
+  transform: scale(1.08);          // hide blur edge artefact
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.person-page__backdrop-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0.86;
+  pointer-events: none;
+  z-index: 0;
+}
+
+// ── Back button row ───────────────────────────────────────────────
+.person-page__back {
+  position: relative;
+  z-index: 1;
+  padding-top: 2rem !important;
+  padding-bottom: 1rem !important;
+}
+
+// ── Hero: portrait + info ─────────────────────────────────────────
+.person-page__hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  padding-top: 0.5rem;
+  padding-bottom: 2.5rem !important;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.75rem;
+    padding-top: 1.5rem;
+  }
+}
+
+// ── Portrait ──────────────────────────────────────────────────────
+.person-page__portrait-wrap {
+  flex-shrink: 0;
+  width: 220px;
+
+  @media (max-width: 768px) {
+    width: 160px;
+  }
+}
+
+.person-page__portrait {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: $radius;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  display: block;
+}
+
+.person-page__portrait-placeholder {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: $radius;
+  background: var(--card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+// ── Info column ───────────────────────────────────────────────────
+.person-page__info {
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.person-page__name {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 0.55rem;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.person-page__dept {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(229, 9, 20, 0.12);
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+
+// ── Meta table ────────────────────────────────────────────────────
+.person-page__meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  margin-bottom: 1.4rem;
+  font-size: 0.87rem;
+
+  dt {
+    color: var(--text-secondary);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  dd {
+    color: var(--text);
+    margin: 0;
+    word-break: break-word;
+  }
+
+  @media (max-width: 768px) {
+    justify-content: center;
+    grid-template-columns: auto auto;
+    text-align: left;
+    font-size: 0.83rem;
+  }
+}
+
+.person-page__age {
+  color: var(--text-secondary);
+  font-size: 0.82em;
+}
+
+// ── Biography ─────────────────────────────────────────────────────
+.person-page__bio {
+  p {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+    max-width: 680px;
+    margin: 0 0 0.6rem;
+
+    @media (max-width: 768px) {
+      font-size: 0.85rem;
+      max-width: 100%;
+    }
+  }
+}
+
+.person-page__bio-toggle {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.78; }
+}
+
+// ── Movies section ────────────────────────────────────────────────
+.person-page__movies {
+  position: relative;
+  z-index: 1;
+  padding-top: 1rem !important;
+  padding-bottom: 2rem !important;
+  border-top: 1px solid var(--border);
+}
+
+.person-page__movies-heading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.01em;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 3px;
+    width: 40px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin-top: 0.4rem;
+  }
+}
+
+// ── Movie grid ────────────────────────────────────────────────────
+.person-page__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.1rem;
+
+  .movie-card { width: 100%; }
+
+  @media (max-width: 1100px) { grid-template-columns: repeat(5, 1fr); }
+  @media (max-width: 860px)  { grid-template-columns: repeat(4, 1fr); gap: 0.9rem; }
+  @media (max-width: 640px)  { grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  @media (max-width: 420px)  { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+}
+
+// ── See More button ───────────────────────────────────────────────
+.person-page__load-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.person-page__load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background $transition, color $transition, transform $transition;
+
+  &:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
