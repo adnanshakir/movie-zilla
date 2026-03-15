@@ -31,8 +31,10 @@ const MovieCard = ({ movie }) => {
         )}
         <span className="movie-rating">⭐ {movie.vote_average?.toFixed(1) ?? "N/A"}</span>
       </div>
-      <h3 className="movie-title">{movie.title}</h3>
-      {year && <span className="movie-year">{year}</span>}
+      <div className="movie-card__info">
+        <h3 className="movie-title">{movie.title}</h3>
+        {year && <span className="movie-year">{year}</span>}
+      </div>
     </Link>
   );
 };

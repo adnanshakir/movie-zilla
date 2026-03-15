@@ -5,101 +5,169 @@
   overflow: hidden;
   background: var(--bg);
   border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-height: 200px;
-  padding: 0 1.5rem 2rem;
+  padding: 2rem 1rem 1.25rem;
 
-  // Bottom-to-top fade overlay — keeps footer text readable over the watermark
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.88) 0%,
-      rgba(0, 0, 0, 0.6)  30%,
-      rgba(0, 0, 0, 0.2)  60%,
-      rgba(0, 0, 0, 0)    100%
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  // Giant background watermark
-  &__watermark {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: clamp(4rem, 14vw, 11rem);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text);
-    opacity: 0.05;
-    white-space: nowrap;
-    user-select: none;
-    pointer-events: none;
-    // Fade watermark from solid at top to transparent at bottom
-    mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 50%, transparent 100%);
-  }
-
-  // Foreground content — copyright + social links
   &__content {
-    position: relative;
-    z-index: 1;
+    max-width: 1120px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.6rem;
+    gap: 1.35rem;
+  }
+
+  &__top {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(0, 2fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  &__brand {
+    display: inline-block;
+    width: fit-content;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: color $transition;
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 1.25rem;
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  &__heading {
+    margin: 0 0 0.2rem;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
   }
 
   &__copy {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-secondary);
-    text-align: center;
     margin: 0;
     letter-spacing: 0.02em;
   }
 
-  &__social {
+  &__bottom {
+    position: relative;
+    z-index: 2;
+    min-height: 96px;
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    align-items: flex-end;
+  }
+
+  &__watermark {
+    position: absolute;
+    right: 0;
+    bottom: -42px;
+    font-size: clamp(3.5rem, 15vw, 11rem);
+    font-weight: 700;
+    line-height: 0.9;
+    color: var(--text);
+    opacity: 0.08;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    white-space: nowrap;
   }
 
   &__link {
-    font-size: 0.78rem;
-    font-weight: 600;
+    display: block;
+    width: fit-content;
+    font-size: 0.84rem;
+    font-weight: 500;
     color: var(--text-secondary);
     text-decoration: none;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
     transition: color $transition;
 
     &:hover {
       color: var(--text);
-      text-decoration: underline;
     }
   }
 
-  @media (max-width: 480px) {
-    padding-bottom: 1.5rem;
+  @media (max-width: 840px) {
+    &__top {
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
 
-    &__social {
-      gap: 1.25rem;
+    &__brand {
+      justify-self: center;
+      text-align: center;
+    }
+
+    &__nav {
+      grid-template-columns: repeat(2, minmax(130px, 1fr));
+      gap: 1rem;
+      justify-items: center;
+    }
+
+    &__group {
+      width: 100%;
+      max-width: 180px;
+      align-items: center;
+      text-align: center;
+    }
+
+    &__bottom {
+      justify-content: center;
+      min-height: 84px;
+      text-align: center;
+    }
+
+    &__watermark {
+      left: 50%;
+      right: auto;
+      transform: translateX(-50%);
+      bottom: -24px;
+      font-size: clamp(3rem, 20vw, 7rem);
     }
   }
-}
 
-@supports (animation-timeline: view()) {
-  .footer__content {
-    animation: fadeUp 0.65s ease both;
-    animation-timeline: view();
-    animation-range: entry 35% cover 42%;
+  @media (max-width: 560px) {
+    padding: 1.5rem 0.9rem 1rem;
+
+    &__nav {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      justify-items: center;
+    }
+
+    &__group {
+      max-width: 140px;
+      width: 100%;
+      align-items: center;
+      text-align: center;
+    }
+
+    &__bottom {
+      min-height: 64px;
+    }
+
+    &__copy {
+      font-size: 0.74rem;
+      text-align: center;
+    }
+
+    &__watermark {
+      bottom: -14px;
+      font-size: clamp(2.6rem, 22vw, 4.8rem);
+      opacity: 0.06;
+    }
   }
 }

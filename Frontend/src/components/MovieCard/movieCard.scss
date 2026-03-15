@@ -125,9 +125,17 @@
   pointer-events: none;
 }
 
+.movie-card__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 10px 10px;
+  gap: 8px;
+}
+
 // ── Title ─────────────────────────────────────────────────────────
 .movie-title {
-  padding: 8px 10px 2px;
+  padding: 0;
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--text);
@@ -136,18 +144,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   transition: color 0.2s ease;
-
-  .movie-card:hover & {
-    color: var(--accent);
-  }
 }
 
 // ── Year ──────────────────────────────────────────────────────────
 .movie-year {
-  padding: 0 10px 10px;
+  padding: 0;
   font-size: 0.76rem;
   color: var(--text-secondary);
   font-weight: 400;
+  flex-shrink: 0;
 }
 
 @media (hover: none) {

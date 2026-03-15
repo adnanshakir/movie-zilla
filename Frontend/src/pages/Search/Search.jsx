@@ -78,7 +78,7 @@ const Search = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search movies…"
+            placeholder="Search movies & tv shows…"
             autoFocus
             autoComplete="off"
             spellCheck={false}

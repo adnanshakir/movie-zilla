@@ -21,6 +21,20 @@ const GENRES = [
   { label: "Romance",   id: 10749 },
 ];
 
+const MATURITY_RATINGS = [
+  { label: "NR", code: "NR" },
+  { label: "G", code: "G" },
+  { label: "PG", code: "PG" },
+  { label: "PG-13", code: "PG-13" },
+  { label: "R", code: "R" },
+  { label: "NC-17", code: "NC-17" },
+];
+
+const YEARS = Array.from({ length: 10 }, (_, i) => {
+  const year = new Date().getFullYear() - i;
+  return { label: String(year), value: String(year) };
+});
+
 const RATING_OPTIONS = [
   { label: "All", value: ""  },
   { label: "7+",  value: "7" },
@@ -36,6 +50,8 @@ const RATING_OPTIONS = [
  *   filterRating  "" | "7" | "8" | "9"
  *   filterLangs   string[]   (language codes)
  *   filterGenres  number[]   (TMDB genre IDs)
+ *   filterMaturity "" | "NR" | "G" | "PG" | "PG-13" | "R" | "NC-17"
+ *   filterYear    "" | "YYYY"
  *   onChange      (patch: Partial<filters>) => void
  */
 const HomeFilters = ({
@@ -43,6 +59,8 @@ const HomeFilters = ({
   filterRating,
   filterLangs,
   filterGenres,
+  filterMaturity,
+  filterYear,
   onChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -61,15 +79,19 @@ const HomeFilters = ({
         : [...filterGenres, id],
     });
 
-  const handleReset = () => onChange({ langs: [], genres: [] });
+  const handleReset = () =>
+    onChange({ langs: [], genres: [], maturity: "", year: "" });
 
-  const activeCount = filterLangs.length + filterGenres.length;
+  const activeCount =
+    filterLangs.length +
+    filterGenres.length +
+    (filterMaturity ? 1 : 0) +
+    (filterYear ? 1 : 0);
 
   return (
     <div className="hf-wrapper">
       {/* ── Quick filter row ──────────────────────────────────── */}
       <div className="hf-row">
-        {/* Type: Movie / Series */}
         <div className="hf-group" role="group" aria-label="Content type">
           <button
             className={`hf-pill${filterType === "movie" ? " hf-pill--active" : ""}`}
@@ -83,7 +105,7 @@ const HomeFilters = ({
             onClick={() => onChange({ type: "tv" })}
             type="button"
           >
-            Series
+            TV Shows
           </button>
         </div>
 
@@ -135,7 +157,7 @@ const HomeFilters = ({
         </button>
       </div>
 
-      {/* ── Collapsible Language + Genre panel ───────────────── */}
+      {/* ── Collapsible advanced panel ────────────────────────── */}
       <div
         id="hf-panel"
         className={`hf-panel${isOpen ? " hf-panel--open" : ""}`}
@@ -168,6 +190,44 @@ const HomeFilters = ({
                   key={id}
                   className={`hf-chip${filterGenres.includes(id) ? " hf-chip--active" : ""}`}
                   onClick={() => toggleGenre(id)}
+                  type="button"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Maturity rating chips */}
+          <div className="hf-section">
+            <span className="hf-label">Maturity Rating</span>
+            <div className="hf-chips">
+              {MATURITY_RATINGS.map(({ label, code }) => (
+                <button
+                  key={code}
+                  className={`hf-chip${filterMaturity === code ? " hf-chip--active" : ""}`}
+                  onClick={() =>
+                    onChange({ maturity: filterMaturity === code ? "" : code })
+                  }
+                  type="button"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Release year chips */}
+          <div className="hf-section">
+            <span className="hf-label">Release Year</span>
+            <div className="hf-chips">
+              {YEARS.map(({ label, value }) => (
+                <button
+                  key={value}
+                  className={`hf-chip${filterYear === value ? " hf-chip--active" : ""}`}
+                  onClick={() =>
+                    onChange({ year: filterYear === value ? "" : value })
+                  }
                   type="button"
                 >
                   {label}

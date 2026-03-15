@@ -111,7 +111,7 @@ const HomeHero = ({ items = [] }) => {
             <button
               className="hero__search"
               onClick={() => navigate("/search")}
-              aria-label="Search movies and series"
+              aria-label="Search movies and TV shows"
               type="button"
             >
               <svg
@@ -125,7 +125,7 @@ const HomeHero = ({ items = [] }) => {
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21l-4.35-4.35" />
               </svg>
-              <span className="hero__search-placeholder">Search movies &amp; series…</span>
+              <span className="hero__search-placeholder">Search movies &amp; TV Shows…</span>
               <kbd className="hero__search-kbd">S</kbd>
             </button>
           </div>

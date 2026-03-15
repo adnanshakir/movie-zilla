@@ -22,24 +22,53 @@ const GENRES = [
   { label: "Romance",   id: 10749 },
 ];
 
-const Filters = ({ initialLangs = [], initialGenres = [] }) => {
+const RATINGS = [
+  { label: "NR", code: "NR" },
+  { label: "G", code: "G" },
+  { label: "PG", code: "PG" },
+  { label: "PG-13", code: "PG-13" },
+  { label: "R", code: "R" },
+  { label: "NC-17", code: "NC-17" },
+];
+
+const YEARS = Array.from({ length: 10 }, (_, i) => {
+  const year = new Date().getFullYear() - i;
+  return { label: String(year), code: year };
+});
+
+const Filters = ({
+  initialLangs = [],
+  initialGenres = [],
+  initialRatings = [],
+  initialYears = [],
+}) => {
   const navigate = useNavigate();
   // Keep filter panel initially closed on all devices.
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLangs, setSelectedLangs]   = useState(initialLangs);
+  const [selectedLangs, setSelectedLangs] = useState(initialLangs);
   const [selectedGenres, setSelectedGenres] = useState(initialGenres);
+  const [selectedRatings, setSelectedRatings] = useState(initialRatings);
+  const [selectedYears, setSelectedYears] = useState(initialYears);
 
   const toggle = (list, setList, value) => {
     setList((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
   };
 
   const handleApply = () => {
     const params = new URLSearchParams();
-    if (selectedLangs.length)  params.set("lang",  selectedLangs.join(","));
+    if (selectedLangs.length) params.set("lang", selectedLangs.join(","));
     if (selectedGenres.length) params.set("genre", selectedGenres.join(","));
-    if (!selectedLangs.length && !selectedGenres.length) {
+    if (selectedRatings.length)
+      params.set("rating", selectedRatings.join(","));
+    if (selectedYears.length) params.set("year", selectedYears.join(","));
+    if (
+      !selectedLangs.length &&
+      !selectedGenres.length &&
+      !selectedRatings.length &&
+      !selectedYears.length
+    ) {
       navigate("/movies/popular");
       return;
     }
@@ -49,9 +78,15 @@ const Filters = ({ initialLangs = [], initialGenres = [] }) => {
   const handleReset = () => {
     setSelectedLangs([]);
     setSelectedGenres([]);
+    setSelectedRatings([]);
+    setSelectedYears([]);
   };
 
-  const activeCount = selectedLangs.length + selectedGenres.length;
+  const activeCount =
+    selectedLangs.length +
+    selectedGenres.length +
+    selectedRatings.length +
+    selectedYears.length;
 
   return (
     <div className="filter-wrapper">
@@ -108,13 +143,59 @@ const Filters = ({ initialLangs = [], initialGenres = [] }) => {
 
           {/* Genre chips */}
           <div className="filter-panel__section">
-            <span className="filter-panel__label">Genre</span>
+            <span className="filter-panel__label">Genre ALLL</span>
             <div className="filter-panel__chips">
               {GENRES.map(({ label, id }) => (
                 <button
                   key={id}
-                  className={`filter-btn${selectedGenres.includes(id) ? " filter-btn--active" : ""}`}
-                  onClick={() => toggle(selectedGenres, setSelectedGenres, id)}
+                  className={`filter-btn${
+                    selectedGenres.includes(id) ? " filter-btn--active" : ""
+                  }`}
+                  onClick={() =>
+                    toggle(selectedGenres, setSelectedGenres, id)
+                  }
+                  type="button"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Maturity Rating chips */}
+          <div className="filter-panel__section">
+            <span className="filter-panel__label">Maturity Rating</span>
+            <div className="filter-panel__chips">
+              {RATINGS.map(({ label, code }) => (
+                <button
+                  key={code}
+                  className={`filter-btn${
+                    selectedRatings.includes(code) ? " filter-btn--active" : ""
+                  }`}
+                  onClick={() =>
+                    toggle(selectedRatings, setSelectedRatings, code)
+                  }
+                  type="button"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Release Year chips */}
+          <div className="filter-panel__section">
+            <span className="filter-panel__label">Release Year</span>
+            <div className="filter-panel__chips">
+              {YEARS.map(({ label, code }) => (
+                <button
+                  key={code}
+                  className={`filter-btn${
+                    selectedYears.includes(code) ? " filter-btn--active" : ""
+                  }`}
+                  onClick={() =>
+                    toggle(selectedYears, setSelectedYears, code)
+                  }
                   type="button"
                 >
                   {label}

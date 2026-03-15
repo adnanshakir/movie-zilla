@@ -271,6 +271,156 @@
     max-width: 760px;
   }
 
+  &__screenshots-section {
+    padding: 0 0 3rem;
+    background: var(--bg);
+  }
+
+  &__screenshots-strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(280px, 36vw);
+    gap: 0.9rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-bottom: 0.35rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+
+    &::-webkit-scrollbar {
+      height: 7px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 999px;
+    }
+
+    @media (max-width: 768px) {
+      grid-auto-columns: minmax(240px, 78vw);
+    }
+  }
+
+  &__screenshot {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background: var(--card);
+    cursor: zoom-in;
+    min-height: 160px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      border-color: var(--accent);
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+  }
+
+  &__shot-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  &__shot-modal {
+    position: relative;
+    width: min(1200px, 100%);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: $radius;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+  }
+
+  &__shot-close,
+  &__shot-nav {
+    position: absolute;
+    z-index: 5;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.62);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.36rem 0.66rem;
+    cursor: pointer;
+    transition: border-color $transition, background $transition;
+
+    &:hover {
+      border-color: var(--accent);
+      background: rgba(0, 0, 0, 0.78);
+    }
+  }
+
+  &__shot-close {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+
+  &__shot-nav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    &--prev {
+      left: 0.75rem;
+    }
+
+    &--next {
+      right: 0.75rem;
+    }
+  }
+
+  &__shot-stage {
+    height: min(80vh, 760px);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #0a0a0a;
+    padding: 1.2rem 3.2rem;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      user-select: none;
+    }
+  }
+
   // ── Trailer modal ─────────────────────────────────────────
   &__modal-backdrop {
     position: fixed;

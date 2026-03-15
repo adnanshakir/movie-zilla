@@ -28,8 +28,8 @@ const normalize = (item) => ({
 });
 
 // Build the TMDB URL for the grid — includes page for pagination
-const buildGridUrl = (category, type, langs, genres, rating, page) => {
-  const hasFilter = langs.length > 0 || genres.length > 0 || rating;
+const buildGridUrl = (category, type, langs, genres, rating, maturity, year, page) => {
+  const hasFilter = langs.length > 0 || genres.length > 0 || rating || maturity || year;
   const media     = type === "tv" ? "tv" : "movie";
 
   if (hasFilter) {
@@ -42,6 +42,17 @@ const buildGridUrl = (category, type, langs, genres, rating, page) => {
     if (langs.length)  params.set("with_original_language", langs.join("|"));
     if (genres.length) params.set("with_genres", genres.join(","));
     if (rating)        params.set("vote_average.gte", rating);
+    if (year) {
+      if (media === "tv") {
+        params.set("first_air_date_year", year);
+      } else {
+        params.set("primary_release_year", year);
+      }
+    }
+    if (maturity && media === "movie") {
+      params.set("certification_country", "US");
+      params.set("certification", maturity);
+    }
     return `${TMDB_BASE}/discover/${media}?${params.toString()}`;
   }
 
@@ -78,6 +89,8 @@ const Home = () => {
   const [filterRating, setFilterRating]     = useState("");
   const [filterLangs, setFilterLangs]       = useState([]);
   const [filterGenres, setFilterGenres]     = useState([]);
+  const [filterMaturity, setFilterMaturity] = useState("");
+  const [filterYear, setFilterYear]         = useState("");
 
   const sentinelRef = useRef(null);
 
@@ -95,7 +108,15 @@ const Home = () => {
     setPage(1);
     setHasMore(true);
     setLoading(true);
-  }, [activeCategory, filterType, filterRating, filterLangs, filterGenres]);
+  }, [
+    activeCategory,
+    filterType,
+    filterRating,
+    filterLangs,
+    filterGenres,
+    filterMaturity,
+    filterYear,
+  ]);
 
   // Fetch a single page — runs on page change or after reset
   useEffect(() => {
@@ -103,7 +124,14 @@ const Home = () => {
     setLoading(true);
 
     const url = buildGridUrl(
-      activeCategory, filterType, filterLangs, filterGenres, filterRating, page
+      activeCategory,
+      filterType,
+      filterLangs,
+      filterGenres,
+      filterRating,
+      filterMaturity,
+      filterYear,
+      page
     );
 
     fetch(url, { signal: controller.signal })
@@ -127,7 +155,16 @@ const Home = () => {
 
     // Abort stale request when deps change (prevents race conditions)
     return () => controller.abort();
-  }, [page, activeCategory, filterType, filterRating, filterLangs, filterGenres]);
+  }, [
+    page,
+    activeCategory,
+    filterType,
+    filterRating,
+    filterLangs,
+    filterGenres,
+    filterMaturity,
+    filterYear,
+  ]);
 
   // IntersectionObserver — triggers next page when sentinel enters viewport.
   // Only active while not loading and more pages exist.
@@ -159,11 +196,13 @@ const Home = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [navigate]);
 
-  const handleFilterChange = useCallback(({ type, rating, langs, genres }) => {
-    if (type   !== undefined) setFilterType(type);
-    if (rating !== undefined) setFilterRating(rating);
-    if (langs  !== undefined) setFilterLangs(langs);
-    if (genres !== undefined) setFilterGenres(genres);
+  const handleFilterChange = useCallback(({ type, rating, langs, genres, maturity, year }) => {
+    if (type     !== undefined) setFilterType(type);
+    if (rating   !== undefined) setFilterRating(rating);
+    if (langs    !== undefined) setFilterLangs(langs);
+    if (genres   !== undefined) setFilterGenres(genres);
+    if (maturity !== undefined) setFilterMaturity(maturity);
+    if (year     !== undefined) setFilterYear(year);
   }, []);
 
   // Show skeleton grid on initial / reset load; show cards + bottom spinner for pagination
@@ -198,6 +237,8 @@ const Home = () => {
           filterRating={filterRating}
           filterLangs={filterLangs}
           filterGenres={filterGenres}
+          filterMaturity={filterMaturity}
+          filterYear={filterYear}
           onChange={handleFilterChange}
         />
 

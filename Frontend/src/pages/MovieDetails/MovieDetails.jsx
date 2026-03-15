@@ -4,6 +4,7 @@ import tmdb from "../../services/tmdb.api.js";
 import BackButton from "../../components/BackButton/BackButton.jsx";
 import Cast from "../../components/Cast/Cast.jsx";
 import Suggestions from "../../components/Suggestions/Suggestions.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
 import useWatchlist from "../../hooks/useWatchlist.js";
 import "./movieDetails.scss";
 
@@ -18,6 +19,8 @@ const MovieDetails = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [screenshots, setScreenshots] = useState([]);
+  const [selectedScreenshot, setSelectedScreenshot] = useState(null);
 
   // Helper: redirect unauthenticated users to login, preserving where they came from
   const requireAuth = () => {
@@ -30,13 +33,30 @@ const MovieDetails = () => {
   useEffect(() => {
     setLoading(true);
     setError("");
-    fetch(tmdb.getMovieDetails(id))
-      .then((res) => {
+    Promise.all([
+      fetch(tmdb.getMovieDetails(id)).then((res) => {
         if (!res.ok) throw new Error("Failed to load movie");
         return res.json();
-      })
-      .then((data) => {
-        setMovie(data);
+      }),
+      fetch(tmdb.getMovieImages(id))
+        .then((res) => (res.ok ? res.json() : { backdrops: [] }))
+        .catch(() => ({ backdrops: [] })),
+    ])
+      .then(([movieData, imagesData]) => {
+        setMovie(movieData);
+
+        const uniqueByPath = new Set();
+        const nextScreens = (imagesData?.backdrops ?? [])
+          .filter((img) => img?.file_path)
+          .filter((img) => {
+            if (uniqueByPath.has(img.file_path)) return false;
+            uniqueByPath.add(img.file_path);
+            return true;
+          })
+          .slice(0, 12);
+
+        setScreenshots(nextScreens);
+        setSelectedScreenshot(null);
         setLoading(false);
       })
       .catch((err) => {
@@ -79,11 +99,11 @@ const MovieDetails = () => {
 
   // Lock page scroll while trailer modal is open
   useEffect(() => {
-    document.body.style.overflow = showTrailer ? "hidden" : "";
+    document.body.style.overflow = showTrailer || selectedScreenshot ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showTrailer]);
+  }, [showTrailer, selectedScreenshot]);
 
   // Close trailer modal on Escape key (<BackButton> handles Escape when trailer is closed)
   useEffect(() => {
@@ -100,6 +120,31 @@ const MovieDetails = () => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [showTrailer]);
+
+  useEffect(() => {
+    if (!selectedScreenshot) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        setSelectedScreenshot(null);
+        return;
+      }
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        showPrevScreenshot();
+        return;
+      }
+
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        showNextScreenshot();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [selectedScreenshot, screenshots]);
 
   const toggleFavorite = () => {
     if (!movie) return;
@@ -128,6 +173,30 @@ const MovieDetails = () => {
       setShowTrailer(false);
       setIsClosing(false);
     }, 200);
+  };
+
+  const openScreenshot = (img) => {
+    setSelectedScreenshot(img);
+  };
+
+  const closeScreenshot = () => {
+    setSelectedScreenshot(null);
+  };
+
+  const selectedShotIndex = selectedScreenshot
+    ? screenshots.findIndex((img) => img.file_path === selectedScreenshot.file_path)
+    : -1;
+
+  const showPrevScreenshot = () => {
+    if (!screenshots.length || selectedShotIndex < 0) return;
+    const prevIndex = (selectedShotIndex - 1 + screenshots.length) % screenshots.length;
+    setSelectedScreenshot(screenshots[prevIndex]);
+  };
+
+  const showNextScreenshot = () => {
+    if (!screenshots.length || selectedShotIndex < 0) return;
+    const nextIndex = (selectedShotIndex + 1) % screenshots.length;
+    setSelectedScreenshot(screenshots[nextIndex]);
   };
 
   const trailer = movie?.videos?.results?.find(
@@ -177,7 +246,7 @@ const MovieDetails = () => {
         <div className="movie-details__hero-overlay" aria-hidden="true" />
         <div className="movie-details__hero-content">
           <div className="movie-details__top-bar">
-            <BackButton disabled={showTrailer} />
+            <BackButton disabled={showTrailer || !!selectedScreenshot} />
           </div>
 
           <div className="movie-details__header">
@@ -277,11 +346,85 @@ const MovieDetails = () => {
         </section>
       )}
 
+      {/* ── Screenshots gallery ── */}
+      {screenshots.length > 0 && (
+        <section className="movie-details__screenshots-section">
+          <div className="movie-details__section-inner">
+            <h2 className="movie-details__section-heading">Screenshots</h2>
+
+            <div className="movie-details__screenshots-strip" role="list" aria-label="Movie screenshots">
+              {screenshots.map((img) => {
+                const imageUrl = `https://image.tmdb.org/t/p/w780${img.file_path}`;
+                return (
+                  <button
+                    key={img.file_path}
+                    type="button"
+                    role="listitem"
+                    className="movie-details__screenshot"
+                    onClick={() => openScreenshot(img)}
+                    aria-label="Open screenshot"
+                  >
+                    <img src={imageUrl} alt={`${movie.title} screenshot`} loading="lazy" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── Cast section ── */}
       <Cast movieId={id} />
 
       {/* ── Related suggestions ── */}
       <Suggestions movieId={id} />
+
+      <Footer />
+
+      {/* ── Screenshot viewer ── */}
+      {selectedScreenshot && (
+        <div className="movie-details__shot-backdrop" onClick={closeScreenshot}>
+          <div className="movie-details__shot-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="movie-details__shot-close"
+              onClick={closeScreenshot}
+              aria-label="Close screenshot"
+            >
+              X
+            </button>
+
+            <button
+              type="button"
+              className="movie-details__shot-nav movie-details__shot-nav--prev"
+              onClick={showPrevScreenshot}
+              aria-label="Previous screenshot"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M15 6l-6 6 6 6" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              className="movie-details__shot-nav movie-details__shot-nav--next"
+              onClick={showNextScreenshot}
+              aria-label="Next screenshot"
+            >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </button>
+
+            <div className="movie-details__shot-stage">
+              <img
+                src={`https://image.tmdb.org/t/p/original${selectedScreenshot.file_path}`}
+                alt={`${movie.title} screenshot enlarged`}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Trailer modal (full-screen) ── */}
       {showTrailer && trailer && (
